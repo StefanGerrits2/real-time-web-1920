@@ -1,0 +1,19 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+
+    "rules": {
+        "semi": "error",
+        "quotes": ["error", "single"],
+        "indent": [2, 4],
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+        "comma-style": ["error", "last"],
+        "comma-spacing": ["error", { "before": false, "after": true }]
+    }
+}
