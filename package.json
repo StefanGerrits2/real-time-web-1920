@@ -1,45 +1,45 @@
 {
-  "name": "real-time-web-1920",
-  "version": "1.0.0",
-  "description": "During this course you will learn how to build a **meaningful** real-time application. You will learn techniques to setup an open connection between the client and the server. This will enable you to send data in real-time both ways, at the same time.",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "predev": "npm run build:css",
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "prebuild:css": "rimraf ./public/dist",
-    "build:css": "gulp sass",
-    "watch:css": "gulp watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StefanGerrits2/real-time-web-1920.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/StefanGerrits2/real-time-web-1920/issues"
-  },
-  "homepage": "https://github.com/StefanGerrits2/real-time-web-1920#readme",
-  "dependencies": {
-    "compression": "^1.7.4",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-handlebars": "^4.0.3",
-    "express-minify-html-2": "^1.0.1",
-    "http": "0.0.1-security",
-    "socket.io": "^2.3.0"
-  },
-  "devDependencies": {
-    "browser-sync": "^2.26.7",
-    "eslint": "^6.8.0",
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-sass": "^4.0.2",
-    "nodemon": "^2.0.2",
-    "rimraf": "^3.0.2"
-  }
+    "name": "real-time-web-1920",
+    "version": "1.0.0",
+    "description": "During this course you will learn how to build a **meaningful** real-time application. You will learn techniques to setup an open connection between the client and the server. This will enable you to send data in real-time both ways, at the same time.",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "predev": "npm run build:css",
+        "dev": "nodemon server.js",
+        "start": "node server.js",
+        "prebuild:css": "rimraf ./public/dist",
+        "build:css": "gulp sass",
+        "watch:css": "gulp watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/StefanGerrits2/real-time-web-1920.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/StefanGerrits2/real-time-web-1920/issues"
+    },
+    "homepage": "https://github.com/StefanGerrits2/real-time-web-1920#readme",
+    "dependencies": {
+        "compression": "^1.7.4",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-handlebars": "^4.0.3",
+        "express-minify-html-2": "^1.0.1",
+        "http": "0.0.1-security",
+        "socket.io": "^2.3.0"
+    },
+    "devDependencies": {
+        "browser-sync": "^2.26.7",
+        "eslint": "^6.8.0",
+        "gulp": "^4.0.2",
+        "gulp-clean-css": "^4.3.0",
+        "gulp-sass": "^4.0.2",
+        "nodemon": "^2.0.2",
+        "rimraf": "^3.0.2"
+    }
 }

@@ -5,7 +5,7 @@ const hbs = require('express-handlebars');
 
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const socket = require('socket.io')(server);
 
 const minifyHTML = require('express-minify-html-2');
 const compression = require('compression');
@@ -49,9 +49,18 @@ app
 
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-io.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
+const users = {};
+
+socket.on('connection', socket => {
+    socket.on('send-chat-message', msg => {
+        socket.broadcast.emit('chat-message', { msg: msg, name: users[socket.id] });
+    });
+    socket.on('new-user', name => {
+        users[socket.id] = name;
+        socket.broadcast.emit('user-connected', name);
+    });
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('user-disconnected', users[socket.id]);
+        delete users[socket.id];
     });
 });
