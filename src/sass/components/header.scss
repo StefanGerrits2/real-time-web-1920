@@ -1,9 +1,14 @@
 header {
     margin: -22px 0 0 0;
-    padding: 2em;
-    background-color: #3e29a0;
+    background-image: linear-gradient(to right, #8243ed , #b734f9);
     color: white;
     position: fixed;
     width: 100%;
-    height: 3em;
+    height: 7em;
+    border-bottom-right-radius: 20px;
+}
+
+header h1 {
+    margin: 0;
+    padding: 1.5em 1em;
 }
