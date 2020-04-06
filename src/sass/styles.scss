@@ -47,6 +47,7 @@ form {
         background-color: #603cff;
         color: white;
         border: none;
+        cursor: pointer;
     }
 }
 
@@ -55,4 +56,9 @@ form {
     color: white;
     padding: 1em;
     border-radius: 10px;
+}
+
+#messages__container {
+    padding-top: 6em;
+    padding-bottom: 3em;
 }

@@ -1,5 +1,7 @@
 const socket = io();
 
+const messageContainer = document.querySelector('#messages__container');
+
 const name = prompt('What is your name?');
 appendMessage('You joined');
 socket.emit('new-user', name);
@@ -42,5 +44,10 @@ function appendMessage(msg){
     newMessage.classList.add('message');
     newMessage.textContent = msg;
 
-    document.querySelector('#messages__container').appendChild(newMessage);
+    messageContainer.appendChild(newMessage);
+    scrollToBottom();
 };
+
+function scrollToBottom() {
+    window.scrollTo(0, document.body.scrollHeight);
+}
