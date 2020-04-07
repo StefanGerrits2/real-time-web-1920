@@ -15,6 +15,7 @@ body {
 
 #messages__container {
     padding: 2em;
+    min-height: 77vh;
 }
 
 form {
@@ -25,6 +26,7 @@ form {
     display: flex;
     justify-content: space-between;
     border-top: 4px solid #eef5f8;
+    background-color: white;
 
     & #input {
         width: 70%;
@@ -34,6 +36,8 @@ form {
         color: black;
         border: none;
         outline: none;
+        font-family: Muli-Medium, sans-serif;
+        font-size: 1em;
 
         &::placeholder {
             color: #bbbbbb;
@@ -52,18 +56,20 @@ form {
         cursor: pointer;
         outline: none;
         border-left: 4px solid #eef5f8;
+        font-family: Muli-Bold, sans-serif;
     }
 }
 
 #messages__container {
     padding-top: 6em;
-    padding-bottom: 3em;
+    padding-bottom: 5em;
+    padding: 6em 1em 4em 1em;
 }
 
 .outer-message {
     overflow-x: hidden;
     background-color: #eef5f8;
-    padding: .5em 1em;
+    padding: 0em 1em;
     border-radius: 10px;
     margin: 1em 0em;
     width: fit-content;
@@ -71,6 +77,7 @@ form {
 
 .message {
     color: black;
+    font-family: Muli-Light, sans-serif;
 }
 
 // Text colors
@@ -97,6 +104,15 @@ form {
     
     & p {
         color: white;
+    }
+}
+
+.error-message {
+    background-color: #eef5f8;
+    margin-left: auto;
+    
+    & p {
+        color: red;
     }
 }
 

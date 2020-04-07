@@ -50,15 +50,69 @@ app
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 const users = {};
+const sentMessages = [];
 
 socket.on('connection', socket => {
+    // Chat message
     socket.on('send-chat-message', msg => {
-        socket.broadcast.emit('chat-message', { msg: msg, name: users[socket.id] });
+        // Save all sent words
+        const newWords = msg.split(' ');
+        console.log('new words', newWords);
+
+        // Check for every sent word
+        let newWordStatus = false;
+
+        newWords.forEach(newWord => {
+            newWord = newWord.toLowerCase();
+
+            if (sentMessages.includes(newWord)) {
+                console.log('woord bestaat al');
+                socket.emit('word-already-used', newWord);
+
+                newWordStatus = true;
+            }
+        });
+
+        // Check status
+        if(!newWordStatus) {
+            console.log('nieuw woord');
+            // Push new words into sent Messages
+            newWords.forEach(newWord => {
+                newWord = newWord.toLowerCase();
+                sentMessages.push(newWord);
+            });
+
+            // Send messages
+            socket.broadcast.emit('their-chat-message', { msg: msg, name: users[socket.id] });
+            socket.emit('your-chat-message', msg);
+        }
+
+        console.log('sent messages', sentMessages);
     });
+
+    // New user connects
     socket.on('new-user', name => {
         users[socket.id] = name;
         socket.broadcast.emit('user-connected', name);
     });
+
+    // Commands
+    socket.on('send-command', command => {
+        const commands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black'];
+
+        // If command exists
+        if (commands.indexOf(command) > -1) {
+            const commandText = command.slice(1);
+            socket.emit('command-executed', commandText);
+        }
+
+        // If command does not exist
+        else {
+            socket.emit('command-not-existing', commands);
+        }
+    });
+
+    // Disconnect
     socket.on('disconnect', () => {
         socket.broadcast.emit('user-disconnected', users[socket.id]);
         delete users[socket.id];
