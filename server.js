@@ -105,7 +105,7 @@ socket.on('connection', socket => {
     socket.on('send-command', command => {
         const personalCommands = ['/words', '/commands'];
         const globalCommands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
-        const allCommands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white', '/words', '/commands'];
+        const allCommands = personalCommands.concat(globalCommands);
 
         // If personal command exists
         if (personalCommands.indexOf(command) > -1) {
