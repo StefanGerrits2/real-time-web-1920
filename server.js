@@ -110,7 +110,7 @@ socket.on('connection', socket => {
         // If personal command exists
         if (personalCommands.indexOf(command) > -1) {
             const commandText = command.slice(1);
-            socket.emit('personal-command-executed', commandText, sentMessages, allCommands);
+            socket.emit('personal-command-executed', commandText, sentMessages, allCommands, sentMessages.length);
             return;
         }
         // If global command exists

@@ -43,17 +43,21 @@ socket.on('global-command-executed', (command) => {
 });
 
 // Personal command executed that exist
-socket.on('personal-command-executed', (command, words, commands) => {
+socket.on('personal-command-executed', (command, words, commands, amount) => {
     if (command === 'commands') {
+        commands = commands.join(', ');
         appendMessage(`Commands: ${commands}`, 'server-message');
     }
     if (command === 'words') {
-        appendMessage(`Used words (${words.length}): ${words}`, 'server-message');
+        words = words.join(', ');
+        console.log('a', words);
+        appendMessage(`Used words (${amount}): ${words}`, 'server-message');
     }
 });
 
 // Command executed that does not exist
 socket.on('command-not-existing', commands => {
+    commands = commands.join(', ');
     appendMessage(`command does not exist, try these instead: ${commands}`, 'error-message');
 });
 
