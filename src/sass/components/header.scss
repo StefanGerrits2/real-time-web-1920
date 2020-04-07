@@ -4,16 +4,24 @@ header {
     position: fixed;
     width: 100%;
     border-bottom-right-radius: 20px;
-}
 
-header h1 {
-    margin: 0;
-    padding: 1.5em 1em 1em 1em;
-    font-family: Muli-Bold, sans-serif;
-    width: fit-content;
-}
+    & h1 {
+        margin: 0;
+        padding: 1.5em 1em 1em 1em;
+        font-family: Muli-Bold, sans-serif;
+        width: fit-content;
+    }
 
-header a {
-    text-decoration: none;
-    color: white;
+    & a {
+        text-decoration: none;
+        color: white;
+    }
+
+    & p {
+        color: #d3d3d3;
+        font-family: Muli-Light;
+        width: fit-content;
+        margin: 0;
+        margin: -1.75em 0em 1em 2em;
+    }
 }

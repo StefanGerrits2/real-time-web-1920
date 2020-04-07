@@ -37,16 +37,18 @@ socket.on('user-disconnected', name => {
     appendMessage(`${name} disconnected`, 'disconnected');
 });
 
-// Command executed that exist
-socket.on('command-executed', (command, words, commands) => {
+// Global command executed that exist
+socket.on('global-command-executed', (command) => {
+    document.querySelector('#messages__container').setAttribute('style', `background-color: ${command}`);
+});
+
+// Personal command executed that exist
+socket.on('personal-command-executed', (command, words, commands) => {
     if (command === 'commands') {
         appendMessage(`Commands: ${commands}`, 'server-message');
     }
     if (command === 'words') {
-        appendMessage(`Used words: ${words}`, 'server-message');
-    }
-    else {
-        document.querySelector('#messages__container').setAttribute('style', `background-color: ${command}`);
+        appendMessage(`Used words (${words.length}): ${words}`, 'server-message');
     }
 });
 
@@ -62,14 +64,12 @@ document.querySelector('#form').addEventListener('submit', function(event) {
     const msg = document.querySelector('#input').value;
 
     if (msg !== '') {
-
         const firstCharacter = msg.charAt(0);
         // Command
         if (firstCharacter === '/') {
             console.log('new command');
             socket.emit('send-command', msg);
         }
-
         // Normal message
         else {
             console.log('new message');

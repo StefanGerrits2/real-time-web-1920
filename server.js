@@ -103,17 +103,27 @@ socket.on('connection', socket => {
 
     // Commands
     socket.on('send-command', command => {
-        const commands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white', '/words', '/commands'];
+        const personalCommands = ['/words', '/commands'];
+        const globalCommands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
+        const allCommands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white', '/words', '/commands'];
 
-        // If command exists
-        if (commands.indexOf(command) > -1) {
+        // If personal command exists
+        if (personalCommands.indexOf(command) > -1) {
             const commandText = command.slice(1);
-            socket.emit('command-executed', commandText, sentMessages, commands);
+            socket.emit('personal-command-executed', commandText, sentMessages, allCommands);
+            return;
+        }
+        // If global command exists
+        if (globalCommands.indexOf(command) > -1) {
+            const commandText = command.slice(1);
+            socket.emit('global-command-executed', commandText);
+            socket.broadcast.emit('global-command-executed', commandText);
+            return;
         }
 
         // If command does not exist
         else {
-            socket.emit('command-not-existing', commands);
+            socket.emit('command-not-existing', allCommands);
         }
     });
 
