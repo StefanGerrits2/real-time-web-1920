@@ -50,7 +50,7 @@ app
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 const users = {};
-const sentMessages = [];
+let sentMessages = [];
 
 socket.on('connection', socket => {
     // Chat message
@@ -67,7 +67,7 @@ socket.on('connection', socket => {
 
             if (sentMessages.includes(newWord)) {
                 console.log('woord bestaat al');
-                socket.emit('word-already-used', newWord);
+                socket.emit('word-already-used', newWord, sentMessages.length);
 
                 newWordStatus = true;
             }
@@ -81,6 +81,11 @@ socket.on('connection', socket => {
                 newWord = newWord.toLowerCase();
                 sentMessages.push(newWord);
             });
+
+            // When the amount of unique sent messages is above 50, reset the words
+            if (sentMessages.length > 50) {
+                sentMessages = [];
+            }
 
             // Send messages
             socket.broadcast.emit('their-chat-message', { msg: msg, name: users[socket.id] });
@@ -98,12 +103,12 @@ socket.on('connection', socket => {
 
     // Commands
     socket.on('send-command', command => {
-        const commands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black'];
+        const commands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white', '/words', '/commands'];
 
         // If command exists
         if (commands.indexOf(command) > -1) {
             const commandText = command.slice(1);
-            socket.emit('command-executed', commandText);
+            socket.emit('command-executed', commandText, sentMessages, commands);
         }
 
         // If command does not exist

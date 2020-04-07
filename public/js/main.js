@@ -19,12 +19,12 @@ socket.on('their-chat-message', data => {
 });
 
 // Your chat message
-socket.on('word-already-used', usedWord => {
-    appendMessage(`Sorry, you wrote "${usedWord}", you cannot use words that have already been used!`, 'error-message');
+socket.on('word-already-used', (usedWord, wordsAmount) => {
+    appendMessage(`Sorry, you wrote "${usedWord}", you cannot use words that have already been used! Resetting at 50 words, current amount: ${wordsAmount}, type /words `, 'error-message');
 });
 
 socket.on('your-chat-message', msg => {
-    appendMessage(`You: ${msg}`, 'your-message');
+    appendMessage(`${msg}`, 'your-message');
 });
 
 // User connected
@@ -38,8 +38,16 @@ socket.on('user-disconnected', name => {
 });
 
 // Command executed that exist
-socket.on('command-executed', color => {
-    document.querySelector('#messages__container').setAttribute('style', `background-color: ${color}`);
+socket.on('command-executed', (command, words, commands) => {
+    if (command === 'commands') {
+        appendMessage(`Commands: ${commands}`, 'server-message');
+    }
+    if (command === 'words') {
+        appendMessage(`Used words: ${words}`, 'server-message');
+    }
+    else {
+        document.querySelector('#messages__container').setAttribute('style', `background-color: ${command}`);
+    }
 });
 
 // Command executed that does not exist
