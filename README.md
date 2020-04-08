@@ -1,62 +1,89 @@
-# Real-Time Web @cmda-minor-web · 2019-2020
+## Unique word chat app
 
-During this course you will learn how to build a **meaningful** real-time application. You will learn techniques to setup an open connection between the client and the server. This will enable you to send data in real-time both ways, at the same time.
+![image](https://user-images.githubusercontent.com/45566396/78790343-b075c500-79ae-11ea-84b6-26a3f093b852.png)
 
-## Goals
-- _Deal with real-time complexity_
-- _Handle real-time client-server interaction_
-- _Handle real-time data management_
-- _Handle multi-user support_
+### Special feature
 
-[Rubric][rubric]
+I've created a feature which forces the users to not copy eachothers texts and thus to use unique words. Every unique word that has been typed will be saved on the server. You can see these words if you type `/words`.
 
-## Curriculum
+When the count reaches above 50, it will be resetted. This way it starts over again to make sure users will still be able to chat in a reasonable way.
 
-### Week 1 - Hello Server
+You can also type `/commands` to checkout all commands.
 
-Goal: Build and deploy a unique barebone real-time app  
+* If you type a color command the background color on every users screen will change to that color. 
+* If you type a word thas has already been used, it tells you which word it is and how many current words there are.
+* If you type a command that doesn't exist, it tells you the command does not exist + a list with available commands.
 
-[Exercises](https://github.com/cmda-minor-web/real-time-web-1819/blob/master/week-1.md)    
-[Slides](https://docs.google.com/presentation/d/1EVsEFgBnG699nce058ss_PkVJROQXDp5wJJ-IRXvzTA/edit?usp=sharing)  
+### Socket server events
+##### General
+* `connect`
 
+This is a built in socket wich activates when a user connects.
 
-### Week 2 - Sharing is caring  
+* `disconnect`
 
-Goal: Store, manipulate and share data between server-client   
+This is a built in socket wich activates when a user disconnects.
 
-[Exercises](https://github.com/cmda-minor-web/real-time-web-1819/blob/master/week-2.md)    
-[Slides](https://docs.google.com/presentation/d/1woKoY59D8Zcttna0FzfNjEtGtT8oXWi9b5LYlukRISM/edit?usp=sharing)
+##### Chat messages
+* `send-chat-message`
 
+General text message.
 
-### Week 3 - Let’s take this show on the road 
+* `your-chat-message`
 
-Goal: Handle data sharing and multi-user support 
+Chat messages from yourself.
 
-[Exercises](https://github.com/cmda-minor-web/real-time-web-1819/blob/master/week-3.md)  
-[Slides](https://docs.google.com/presentation/d/1SHofRYg87bhdqhv7DQb_HZMbW7Iq1PtqxpdtZHMbMmk/edit?usp=sharing)
+* `their-chat-message`
 
-> If you're seeing this message on a forked repo, it means one of our students hasn't changed the description yet 😈
+Chat messages from every user except you.
 
-<!-- Add a link to your live demo in Github Pages 🌐-->
+* `new-user`
 
-<!-- ☝️ replace this description with a description of your own work -->
+This will add a chat message with info about who joined the chat.
 
-<!-- replace the code in the /docs folder with your own, so you can showcase your work with GitHub Pages 🌍 -->
+##### Commands
+* `send-command`
 
-<!-- Add a nice image here at the end of the week, showing off your shiny frontend 📸 -->
+Tekst hier
 
-<!-- Maybe a table of contents here? 📚 -->
+##### Server messages
+* `word-already-used`
 
-<!-- How about a section that describes how to install this project? 🤓 -->
+Tekst hier
 
-<!-- ...but how does one use this project? What are its features 🤔 -->
+### Socket client listeners
+##### Connections
+* `user-connected`
 
-<!-- What external data source is featured in your project and what are its properties 🌠 -->
+Tekst hier
 
-<!-- This would be a good place for your data life cycle ♻️-->
+* `user-disconnected`
 
-<!-- Maybe a checklist of done stuff and stuff still on your wishlist? ✅ -->
+Tekst hier
 
-<!-- How about a license here? 📜  -->
+##### Chat messages
+* `your-chat-message`
 
-[rubric]: https://docs.google.com/spreadsheets/d/e/2PACX-1vSd1I4ma8R5mtVMyrbp6PA2qEInWiOialK9Fr2orD3afUBqOyvTg_JaQZ6-P4YGURI-eA7PoHT8TRge/pubhtml
+Tekst hier
+
+* `their-chat-message`
+
+Tekst hier
+
+##### Commands
+* `personal-command-executed`
+
+I have devided the commands, I made personal and global. The personal commands will only affect the user who sent it. Some personal commands are: `/commands` and `/words`.
+
+* `global-command-executed`
+
+Global commands will affect everyone, I've made commands to be able to change the background color of everyones chat. This is broadcasted. These commands are `/red`, `/blue`, `/orange`, `/yellow`, `/green`, `/black` and `/white`.
+
+##### Server messages
+* `word-already-used`
+
+This will tell the user when he sends a words that has already been used, it tells the user he cannot use that word and how many unique words are currently used. This will tell the user to do `/words` to be able to see all words that have been used.
+
+* `command-not-existing`
+
+This will tell the user the command does not exist, plus all existing commands that are available.
