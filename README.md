@@ -1,6 +1,11 @@
 ## Unique word chat app
 
 ![image](https://user-images.githubusercontent.com/45566396/78790343-b075c500-79ae-11ea-84b6-26a3f093b852.png)
+####[Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
+
+### Description
+
+This is a chat app made with sockets. You can connect to it and fill in your name. After this you're able to send messages to everyone else that's connected. This project is made within 2 days.
 
 ### Special feature
 
@@ -87,3 +92,48 @@ This will tell the user when he sends a words that has already been used, it tel
 * `command-not-existing`
 
 This will tell the user the command does not exist, plus all existing commands that are available.
+
+## Installation
+
+### 1. Clone this repository to your computer
+Run this command in your terminal:
+
+`git clone https://github.com/StefanGerrits2/real-time-web-1920`
+### 2. Navigate into the root of the folder
+Run this command in your terminal:
+
+`cd real-time-web-1920`
+
+### 3 Installing packages
+Run this command in your terminal:
+
+`npm install`
+
+### 4. Viewing the website
+Run this command in your terminal:
+
+`npm run start`
+
+Now go to your `localhost:3000` in your browser.
+
+If you want to view in dev mode, run:
+
+`npm run dev`
+
+and (optional)
+
+`npm run watch:css` in another terminal if you want to update the css
+
+## Sources
+
+* [MDN](https://developer.mozilla.org/nl/) - Main source for javascript code
+* [Socket.io](https://socket.io/) - For documentation about socket.io
+* [This socket.io tutorial](https://www.youtube.com/watch?v=rxzOqP9YwmM&t=926s) - It helped me setup the basics of my project
+
+## Check it out!
+
+* [Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
+
+## License
+
+MIT © Stefan Gerrits
