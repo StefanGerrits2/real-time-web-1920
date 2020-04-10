@@ -45,7 +45,7 @@ socket.on('global-command-executed', (command, user) => {
         appendMessage(`${user} actived a rick roll!`, 'global-command-message');
 
         // Set audio volume
-        audio.volume = 0.03;
+        audio.volume = 0.1;
 
         // Change background image
         messageContainer.setAttribute('style', 'background-image: url(https://media1.tenor.com/images/23aeaaa34afd591deee6c163c96cb0ee/tenor.gif?itemid=7220603)');
