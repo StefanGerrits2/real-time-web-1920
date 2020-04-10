@@ -1,5 +1,8 @@
 const socket = io();
 
+// Focus input field
+document.getElementById('input').focus();
+
 const messageContainer = document.querySelector('#messages__container');
 
 // Ask for name
@@ -38,6 +41,7 @@ socket.on('user-disconnected', user => {
 });
 
 const audio = new Audio('/audio/rickroll.mp3');
+let currentColor = '';
 
 // Global command executed that exist
 socket.on('global-command-executed', (command, user) => {
@@ -58,7 +62,7 @@ socket.on('global-command-executed', (command, user) => {
             setTimeout(() => {
                 audio.pause();
                 audio.currentTime = 0;
-                messageContainer.setAttribute('style', 'background-image: initial)');
+                messageContainer.setAttribute('style', `background-color: ${currentColor}`);
             }, 10000);  
         
         }
@@ -68,6 +72,7 @@ socket.on('global-command-executed', (command, user) => {
         if (!isPlaying()) {
             appendMessage(`${user} changed the background to ${command}!`, 'global-command-message');
             messageContainer.setAttribute('style', `background-color: ${command}`);
+            currentColor = command;
         }
 
         else {
