@@ -118,6 +118,5 @@ function scrollToBottom() {
 
 // Update online user amount
 function updateOnlineUsers(amount) {
-    console.log(amount);
     document.querySelector('#online-users').textContent = amount;
 }

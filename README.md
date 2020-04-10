@@ -5,7 +5,7 @@
 
 ### Description
 
-This is a chat app made with sockets. You can connect to it and fill in your name. After this you're able to send messages to everyone else that's connected. This project is made within 2 days.
+This is a chat app made with sockets. You can connect to it and fill in your name. After this you're able to send messages to everyone else that's connected. 
 
 ### Special feature
 
