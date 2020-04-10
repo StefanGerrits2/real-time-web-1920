@@ -71,7 +71,7 @@ socket.on('global-command-executed', (command, user) => {
         }
 
         else {
-            appendMessage('Please wait till rick is done! ', 'server-message');
+            appendMessage('Please wait till rick has stopped rolling! ', 'server-message');
         }
     }
 });
