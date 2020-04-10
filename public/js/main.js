@@ -61,6 +61,11 @@ socket.on('command-not-existing', commands => {
     appendMessage(`command does not exist, try these instead: ${commands}`, 'error-message');
 });
 
+// Online users
+socket.on('online-users', amount => {
+    updateOnlineUsers(amount);
+});
+
 // Send message
 document.querySelector('#form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -89,6 +94,7 @@ document.querySelector('#form').addEventListener('submit', function(event) {
     document.querySelector('#input').value = '';
 });
 
+// Append chat texts
 function appendMessage(msg, type){
     // Outer message div
     const outerMessage = document.createElement('div');
@@ -105,6 +111,13 @@ function appendMessage(msg, type){
     scrollToBottom();
 };
 
+// Scroll to bottom when message is sent/received
 function scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
+}
+
+// Update online user amount
+function updateOnlineUsers(amount) {
+    console.log(amount);
+    document.querySelector('#online-users').textContent = amount;
 }

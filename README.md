@@ -1,7 +1,7 @@
 ## Unique word chat app
 
 ![image](https://user-images.githubusercontent.com/45566396/78790343-b075c500-79ae-11ea-84b6-26a3f093b852.png)
-####[Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
+#### [Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
 
 ### Description
 
@@ -49,31 +49,19 @@ This will add a chat message with info about who joined the chat.
 ##### Commands
 * `send-command`
 
-Tekst hier
-
 ##### Server messages
 * `word-already-used`
-
-Tekst hier
 
 ### Socket client listeners
 ##### Connections
 * `user-connected`
 
-Tekst hier
-
 * `user-disconnected`
-
-Tekst hier
 
 ##### Chat messages
 * `your-chat-message`
 
-Tekst hier
-
 * `their-chat-message`
-
-Tekst hier
 
 ##### Commands
 * `personal-command-executed`
@@ -92,6 +80,11 @@ This will tell the user when he sends a words that has already been used, it tel
 * `command-not-existing`
 
 This will tell the user the command does not exist, plus all existing commands that are available.
+
+##### Server updates
+* `online-users`
+
+Updates online user amount
 
 ## Installation
 

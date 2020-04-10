@@ -11,6 +11,7 @@ body {
     margin: 0;
     width: 100%;
     overflow-x: hidden;
+    font-family: Muli-Light, sans-serif;
 }
 
 #messages__container {
@@ -69,6 +70,20 @@ form {
     padding-top: 6em;
     padding-bottom: 5em;
     padding: 7em 1em 4.5em 1em;
+
+    & #online-users__container {
+        position: fixed;
+        margin-top: .5em;
+        background-color: white;
+        display: flex;
+        padding: 0em 1em;
+        border-radius: 5px;
+
+        & p {
+            display: inline;
+            line-height: .5em;
+        }
+    }
 }
 
 .outer-message {
@@ -82,7 +97,6 @@ form {
 
 .message {
     color: black;
-    font-family: Muli-Light, sans-serif;
 }
 
 // Text colors
@@ -141,5 +155,21 @@ form {
 
     #messages__container {
         padding-top: 8em;
+    }
+
+    #messages__container #online-users__container {
+        margin-top: -1.2em;
+    }
+}
+
+@media screen and (max-width: 374px) {
+    #messages__container #online-users__container {
+        margin-top: 1em;
+    }
+}
+
+@media screen and (width: 374px) {
+    #messages__container #online-users__container {
+        margin-top: -1.2em;
     }
 }

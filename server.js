@@ -50,7 +50,15 @@ app
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 const users = {};
-let sentMessages = [];
+const sentMessages = [];
+
+const getOnlineUsers = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
 socket.on('connection', socket => {
     // Chat message
@@ -97,8 +105,14 @@ socket.on('connection', socket => {
 
     // New user connects
     socket.on('new-user', name => {
+        // Send chat message user connected
         users[socket.id] = name;
         socket.broadcast.emit('user-connected', name);
+
+        // Update online users amount
+        const onlineUsers = getOnlineUsers(users);
+        socket.broadcast.emit('online-users', onlineUsers);
+        socket.emit('online-users', onlineUsers);
     });
 
     // Commands
@@ -129,7 +143,13 @@ socket.on('connection', socket => {
 
     // Disconnect
     socket.on('disconnect', () => {
+        // Send chat message user disconnected
         socket.broadcast.emit('user-disconnected', users[socket.id]);
         delete users[socket.id];
+
+        // Update online users amount
+        const onlineUsers = getOnlineUsers(users);
+        socket.broadcast.emit('online-users', onlineUsers);
+        socket.emit('online-users', onlineUsers);
     });
 });
