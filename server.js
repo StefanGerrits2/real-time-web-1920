@@ -47,8 +47,6 @@ app
     // 404 not found
     .use(notFound);
 
-server.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
 const users = {};
 const sentMessages = [];
 
@@ -118,7 +116,7 @@ socket.on('connection', socket => {
     // Commands
     socket.on('send-command', command => {
         const personalCommands = ['/words', '/commands'];
-        const globalCommands = ['/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
+        const globalCommands = ['/rickroll', '/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
         const allCommands = personalCommands.concat(globalCommands);
 
         // If personal command exists
@@ -153,3 +151,6 @@ socket.on('connection', socket => {
         socket.emit('online-users', onlineUsers);
     });
 });
+
+// Listen
+server.listen(port, () => console.log(`App listening on port ${port}!`));

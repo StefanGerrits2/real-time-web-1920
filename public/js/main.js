@@ -37,9 +37,33 @@ socket.on('user-disconnected', name => {
     appendMessage(`${name} disconnected`, 'disconnected');
 });
 
+const audio = new Audio('/audio/rickroll.mp3');
+
 // Global command executed that exist
 socket.on('global-command-executed', (command) => {
-    document.querySelector('#messages__container').setAttribute('style', `background-color: ${command}`);
+    if (command === 'rickroll') {
+        audio.volume = 0.03;
+
+        // Change background image
+        messageContainer.setAttribute('style', 'background-image: url(https://media1.tenor.com/images/23aeaaa34afd591deee6c163c96cb0ee/tenor.gif?itemid=7220603)');
+
+        // Check if audio is playing
+        if (!isPlaying()) {
+            audio.play();
+
+            // Stops audio and change background after given time
+            setTimeout(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                messageContainer.setAttribute('style', 'background-image: initial)');
+            }, 10000);  
+        
+        }
+    }
+
+    else {
+        messageContainer.setAttribute('style', `background-color: ${command}`);
+    }
 });
 
 // Personal command executed that exist
@@ -120,3 +144,14 @@ function scrollToBottom() {
 function updateOnlineUsers(amount) {
     document.querySelector('#online-users').textContent = amount;
 }
+
+// Check if audio is playing https://stackoverflow.com/questions/9437228/html5-check-if-audio-is-playing
+const isPlaying = function () {
+    return audio
+        && audio.currentTime > 0
+        && !audio.paused
+        && !audio.ended
+        && audio.readyState > 2;
+};
+
+console.log(isPlaying());
