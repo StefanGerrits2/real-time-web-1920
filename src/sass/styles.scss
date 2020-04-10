@@ -19,6 +19,7 @@ body {
     min-height: 77vh;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
 }
 
 form {
@@ -148,6 +149,20 @@ form {
     & p {
         color: white;
     }
+}
+
+.personal-command-message {
+    background-image: linear-gradient(to top, #363636 , #686868);
+    border-left: 7px solid #8243ed;
+    margin-left: auto;
+
+    & p {
+        color: white;
+    }
+}
+
+.global-command-message {
+    border-bottom: 7px solid #35f58f;
 }
 
 @media screen and (max-width: 420px) {

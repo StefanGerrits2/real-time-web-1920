@@ -94,7 +94,7 @@ socket.on('connection', socket => {
             }
 
             // Send messages
-            socket.broadcast.emit('their-chat-message', { msg: msg, name: users[socket.id] });
+            socket.broadcast.emit('their-chat-message', { msg: msg, user: users[socket.id] });
             socket.emit('your-chat-message', msg);
         }
 
@@ -102,10 +102,10 @@ socket.on('connection', socket => {
     });
 
     // New user connects
-    socket.on('new-user', name => {
+    socket.on('new-user', user => {
         // Send chat message user connected
-        users[socket.id] = name;
-        socket.broadcast.emit('user-connected', name);
+        users[socket.id] = user;
+        socket.broadcast.emit('user-connected', user);
 
         // Update online users amount
         const onlineUsers = getOnlineUsers(users);
@@ -115,6 +115,8 @@ socket.on('connection', socket => {
 
     // Commands
     socket.on('send-command', command => {
+        const user = users[socket.id];
+
         const personalCommands = ['/words', '/commands'];
         const globalCommands = ['/rickroll', '/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
         const allCommands = personalCommands.concat(globalCommands);
@@ -128,8 +130,8 @@ socket.on('connection', socket => {
         // If global command exists
         if (globalCommands.indexOf(command) > -1) {
             const commandText = command.slice(1);
-            socket.emit('global-command-executed', commandText);
-            socket.broadcast.emit('global-command-executed', commandText);
+            socket.emit('global-command-executed', commandText, user);
+            socket.broadcast.emit('global-command-executed', commandText, user);
             return;
         }
 
