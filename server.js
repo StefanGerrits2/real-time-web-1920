@@ -156,7 +156,7 @@ socket.on('connection', socket => {
     });
 });
 
-// Spotify API test
+// Spotify API test.
 async function getData() {
     // Default options are marked with *
     fetch('https://api.spotify.com/v1/users/usernamehere', {
