@@ -1,3 +1,18 @@
+## Useful app (concept)
+
+My idea is to use the Spotify API to create a game where you need to guess a song the other users can queue. The more songs you guess, the more points you get. 
+
+I was thinking of the following features:
+* Getting a hint about the name of the song when you press a button or type in /hint. You will get less points if you guess it with a hint.
+
+* You can play the game with multiple users.
+
+* Queue a song by typing in the song name (only that users sees the song name)
+
+* Everyone will be able to see the guesses you make except the answer if you guessed the song name.
+
+* Points will be updated each round, when the game is over the scoreboared will be shown.
+
 ## Unique word chat app
 
 ![image](https://user-images.githubusercontent.com/45566396/78790343-b075c500-79ae-11ea-84b6-26a3f093b852.png)

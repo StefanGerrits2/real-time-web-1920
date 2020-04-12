@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
+const fetch = require('node-fetch');
+require('dotenv').config();
 
 const app = express();
 const server = require('http').Server(app);
@@ -153,6 +155,21 @@ socket.on('connection', socket => {
         socket.emit('online-users', onlineUsers);
     });
 });
+
+// Spotify API test
+async function getData() {
+    // Default options are marked with *
+    fetch('https://api.spotify.com/v1/users/usernamehere', {
+        headers: {
+            'Authorization': `Bearer ${process.env.TOKEN}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => console.log(data));
+
+}
+
+getData();
 
 // Listen
 server.listen(port, () => console.log(`App listening on port ${port}!`));
