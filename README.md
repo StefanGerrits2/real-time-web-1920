@@ -1,15 +1,17 @@
 ## Useful app (concept)
 
-My idea is to use the Spotify API to create a game where you need to guess a song the other users can queue. The more songs you guess, the more points you get. 
+My idea is to use the Openweathermap API to create a game where you need to guess the current temperature of a given city. The more right answers you guess, the more points you get. 
+
+Ofcourse other kind of questions/features will be made while building the app.
 
 I was thinking of the following features:
-* Getting a hint about the name of the song when you press a button or type in /hint. You will get less points if you guess it with a hint.
+* Getting a hint about the temperature of the city when you press a button or type in /hint. You will get less points if you guess it with a hint.
 
 * You can play the game with multiple users.
 
-* Queue a song by typing in the song name (only that users sees the song name)
+* Picking a city on your own by typing in the city name (only that users sees the city name)
 
-* Everyone will be able to see the guesses you make except the answer if you guessed the song name.
+* You will get a multiple choice.
 
 * Points will be updated each round, when the game is over the scoreboared will be shown.
 

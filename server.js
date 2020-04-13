@@ -15,9 +15,15 @@ const compression = require('compression');
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, './public/');
 
+// Modules
+const dataHelper = require('./modules/dataHelper.js');
+const Fetcher = require('./modules/fetch.js');
+
 // Controllers
 const home = require('./routes/home.js');
 const notFound = require('./routes/notFound.js');
+
+
 
 app
     .set('view engine', 'hbs')
@@ -48,6 +54,18 @@ app
 
     // 404 not found
     .use(notFound);
+
+// Weather API test
+async function getData() {
+    // Default options are marked with *
+    const url = `http://api.openweathermap.org/data/2.5/weather?q=amsterdam&appid=${process.env.TOKEN}`;
+    const data = await Fetcher.get(url);
+    const finalData = dataHelper(data);
+    console.log(finalData);
+}
+
+getData();
+//
 
 const users = {};
 const sentMessages = [];
@@ -155,21 +173,6 @@ socket.on('connection', socket => {
         socket.emit('online-users', onlineUsers);
     });
 });
-
-// Spotify API test.
-async function getData() {
-    // Default options are marked with *
-    fetch('https://api.spotify.com/v1/users/usernamehere', {
-        headers: {
-            'Authorization': `Bearer ${process.env.TOKEN}`
-        }
-    })
-        .then(response => response.json())
-        .then(data => console.log(data));
-
-}
-
-getData();
 
 // Listen
 server.listen(port, () => console.log(`App listening on port ${port}!`));
