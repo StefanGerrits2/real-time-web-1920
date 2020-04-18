@@ -57,7 +57,7 @@ app
 let users = [];
 
 socket.on('connection', socket => {
-    let currentUser = '';
+    let currentUser = {};
     // New user connects
     socket.on('new-user', user => {
         
@@ -79,7 +79,7 @@ socket.on('connection', socket => {
         // Current User
         users.forEach(user => {
             if(socket.id == user.id) {
-                currentUser = user.name;
+                currentUser = user;
             }
         });
 
@@ -97,14 +97,12 @@ socket.on('connection', socket => {
     // Chat message
     socket.on('send-chat-message', msg => {
         // Send messages
-        socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser });
+        socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser.name });
         socket.emit('your-chat-message', msg);
     });
 
     // Commands
     socket.on('send-command', command => {
-        const user = currentUser;
-
         // Commands
         const personalCommands = ['commands', 'weather'];
         const globalCommands = ['red', 'blue', 'orange', 'yellow', 'green', 'black', 'white'];
@@ -126,8 +124,8 @@ socket.on('connection', socket => {
 
         // If global command exists
         if (globalCommands.indexOf(command) > -1) {
-            socket.emit('global-command-executed', command, user);
-            socket.broadcast.emit('global-command-executed', command, user);
+            socket.emit('global-command-executed', command, currentUser.name);
+            socket.broadcast.emit('global-command-executed', command, currentUser.name);
             return;
         }
 
@@ -160,7 +158,7 @@ socket.on('connection', socket => {
     // Disconnect
     socket.on('disconnect', () => {
         // Send chat message user disconnected
-        socket.broadcast.emit('user-disconnected', currentUser);
+        socket.broadcast.emit('user-disconnected', currentUser.name);
 
         // Remove user from users if they disconnect
         users = users.filter(item => item.id !== socket.id);
