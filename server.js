@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
-const fetch = require('node-fetch');
 require('dotenv').config();
 
 const app = express();
@@ -18,12 +17,11 @@ const publicPath = path.join(__dirname, './public/');
 // Modules
 const dataHelper = require('./modules/dataHelper.js');
 const Fetcher = require('./modules/fetch.js');
+const getOnlineUsers = require('./modules/getOnlineUsers.js');
 
 // Controllers
 const home = require('./routes/home.js');
 const notFound = require('./routes/notFound.js');
-
-
 
 app
     .set('view engine', 'hbs')
@@ -55,104 +53,102 @@ app
     // 404 not found
     .use(notFound);
 
-// Weather API test
-async function getData() {
-    // Default options are marked with *
-    const url = `http://api.openweathermap.org/data/2.5/weather?q=amsterdam&appid=${process.env.TOKEN}`;
-    const data = await Fetcher.get(url);
-    const finalData = dataHelper(data);
-    console.log(finalData);
-}
-
-getData();
-//
-
-const users = {};
-const sentMessages = [];
-
-const getOnlineUsers = function(obj) {
-    var size = 0, key;
-    for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
+// Save current online users
+let users = [];
 
 socket.on('connection', socket => {
-    // Chat message
-    socket.on('send-chat-message', msg => {
-        // Save all sent words
-        const newWords = msg.split(' ');
-        console.log('new words', newWords);
+    let currentUser = '';
+    // New user connects
+    socket.on('new-user', user => {
+        
+        // Create new user
+        const newUser = {
+            id: '',
+            name: '',
+            score: 0,
+            type: '',
+        };
 
-        // Check for every sent word
-        let newWordStatus = false;
+        newUser.id = socket.id;
+        newUser.name = user;
+        newUser.score = 0;
 
-        newWords.forEach(newWord => {
-            newWord = newWord.toLowerCase();
+        // Push new user into all users
+        users.push(newUser);
 
-            if (sentMessages.includes(newWord)) {
-                console.log('woord bestaat al');
-                socket.emit('word-already-used', newWord, sentMessages.length);
-
-                newWordStatus = true;
+        // Current User
+        users.forEach(user => {
+            if(socket.id == user.id) {
+                currentUser = user.name;
             }
         });
 
-        // Check status
-        if(!newWordStatus) {
-            console.log('nieuw woord');
-            // Push new words into sent Messages
-            newWords.forEach(newWord => {
-                newWord = newWord.toLowerCase();
-                sentMessages.push(newWord);
-            });
-
-            // When the amount of unique sent messages is above 50, reset the words
-            if (sentMessages.length > 50) {
-                sentMessages = [];
-            }
-
-            // Send messages
-            socket.broadcast.emit('their-chat-message', { msg: msg, user: users[socket.id] });
-            socket.emit('your-chat-message', msg);
-        }
-
-        console.log('sent messages', sentMessages);
-    });
-
-    // New user connects
-    socket.on('new-user', user => {
         // Send chat message user connected
-        users[socket.id] = user;
         socket.broadcast.emit('user-connected', user);
 
         // Update online users amount
         const onlineUsers = getOnlineUsers(users);
         socket.broadcast.emit('online-users', onlineUsers);
         socket.emit('online-users', onlineUsers);
+
+        console.log(users);
+    });
+
+    // Chat message
+    socket.on('send-chat-message', msg => {
+        // Send messages
+        socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser });
+        socket.emit('your-chat-message', msg);
     });
 
     // Commands
     socket.on('send-command', command => {
-        const user = users[socket.id];
+        const user = currentUser;
 
-        const personalCommands = ['/words', '/commands'];
-        const globalCommands = ['/rickroll', '/red', '/blue', '/orange', '/yellow', '/green', '/black', '/white'];
+        // Commands
+        const personalCommands = ['commands', 'weather'];
+        const globalCommands = ['red', 'blue', 'orange', 'yellow', 'green', 'black', 'white'];
+        const weatherCommand = 'weather';
         const allCommands = personalCommands.concat(globalCommands);
+
+        let location = '';
+
+        // Get location
+        if (command.split(' ').length > 1) {
+            location = command.split(' ').slice(1).join(' ');
+        }
 
         // If personal command exists
         if (personalCommands.indexOf(command) > -1) {
-            const commandText = command.slice(1);
-            socket.emit('personal-command-executed', commandText, sentMessages, allCommands, sentMessages.length);
+            socket.emit('personal-command-executed', command, allCommands);
             return;
         }
+
         // If global command exists
         if (globalCommands.indexOf(command) > -1) {
-            const commandText = command.slice(1);
-            socket.emit('global-command-executed', commandText, user);
-            socket.broadcast.emit('global-command-executed', commandText, user);
+            socket.emit('global-command-executed', command, user);
+            socket.broadcast.emit('global-command-executed', command, user);
             return;
+        }
+
+        if (command.includes(weatherCommand)) {
+            // Weather API test
+            async function getTemperature(location) {
+                try {
+                    const url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.TOKEN}`;
+                    const data = await Fetcher.get(url);
+                    console.log(data);
+                    const finalData = dataHelper(data);
+                    console.log(finalData);
+                    const temperature = Math.round(finalData.tempInCelcius);
+                    socket.emit('personal-command-executed', command, allCommands, location, temperature);
+                }
+
+                catch(err) {
+                    socket.emit('wrong-location');
+                }
+            }
+            getTemperature(location);
         }
 
         // If command does not exist
@@ -164,8 +160,11 @@ socket.on('connection', socket => {
     // Disconnect
     socket.on('disconnect', () => {
         // Send chat message user disconnected
-        socket.broadcast.emit('user-disconnected', users[socket.id]);
-        delete users[socket.id];
+        socket.broadcast.emit('user-disconnected', currentUser);
+
+        // Remove user from users if they disconnect
+        users = users.filter(item => item.id !== socket.id);
+        console.log(users);
 
         // Update online users amount
         const onlineUsers = getOnlineUsers(users);
