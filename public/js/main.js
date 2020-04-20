@@ -8,7 +8,7 @@ const messageContainer = document.querySelector('#messages__container');
 // Ask for name
 let user = prompt('What is your name?');
 
-if (user == undefined) {
+if (user == undefined || '' ) {
     user = 'Guest';
 }
 
@@ -72,8 +72,8 @@ socket.on('wrong-location', () => {
 });
 
 // Online users
-socket.on('online-users', amount => {
-    updateOnlineUsers(amount);
+socket.on('online-users', users => {
+    updateOnlineUsers(users);
 });
 
 // Send message
@@ -128,6 +128,43 @@ function scrollToBottom() {
 }
 
 // Update online user amount
-function updateOnlineUsers(amount) {
-    document.querySelector('#online-users').textContent = amount;
+function updateOnlineUsers(users) {
+    // Reset
+    document.querySelector('#scores').textContent = '';
+
+    // Reappend 
+    users.forEach(user => {
+        // Super container
+        const superContainer = document.createElement('div');
+        superContainer.id = 'supercontainer';
+
+        // Textr container
+        const leftContainer = document.createElement('div');
+        leftContainer.id = 'user-points__container';
+
+        // Icon container
+        const rightContainer = document.createElement('div');
+        rightContainer.id = 'icon__container';
+
+        if (user.role === 'question-asker') {
+            console.log('questrion-asker');
+            const icon = document.createElement('img');
+            icon.src = 'images/question-picker.svg';
+            rightContainer.appendChild(icon);
+        }
+
+        const name = document.createElement('p');
+        const points = document.createElement('p');
+
+        name.textContent = user.name;
+        points.textContent = 'Points: ' + user.score;
+
+        leftContainer.appendChild(name);
+        leftContainer.appendChild(points);
+
+        superContainer.appendChild(leftContainer);
+        superContainer.appendChild(rightContainer);
+
+        document.querySelector('#scores').appendChild(superContainer);
+    });
 }

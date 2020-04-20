@@ -1,11 +1,15 @@
 ## Useful app (concept)
 
+#### [Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
+
 My idea is to use the Openweathermap API to create a game where you need to guess the current temperature of a given city. The more right answers you guess, the more points you get. 
 
 Ofcourse other kind of questions/features will be made while building the app.
 
 I was thinking of the following features:
 * Getting a hint about the temperature of the city when you press a button or type in /hint. You will get less points if you guess it with a hint.
+
+* Multiple rooms
 
 * You can play the game with multiple users.
 
@@ -15,10 +19,44 @@ I was thinking of the following features:
 
 * Points will be updated each round, when the game is over the scoreboared will be shown.
 
+## Data life cycle
+![image](https://user-images.githubusercontent.com/45566396/79754853-72669280-8318-11ea-982d-3668486cca99.png)
+
+
+## Installation
+
+### 1. Clone this repository to your computer
+Run this command in your terminal:
+
+`git clone https://github.com/StefanGerrits2/real-time-web-1920`
+### 2. Navigate into the root of the folder
+Run this command in your terminal:
+
+`cd real-time-web-1920`
+
+### 3 Installing packages
+Run this command in your terminal:
+
+`npm install`
+
+### 4. Viewing the website
+Run this command in your terminal:
+
+`npm run start`
+
+Now go to your `localhost:3000` in your browser.
+
+If you want to view in dev mode, run:
+
+`npm run dev`
+
+and (optional)
+
+`npm run watch:css` in another terminal if you want to update the css
+
 ## Unique word chat app
 
 ![image](https://user-images.githubusercontent.com/45566396/78790343-b075c500-79ae-11ea-84b6-26a3f093b852.png)
-#### [Click here to open the live link](https://frozen-refuge-52748.herokuapp.com/)
 
 ### Description
 
@@ -102,37 +140,6 @@ This will tell the user the command does not exist, plus all existing commands t
 * `online-users`
 
 Updates online user amount
-
-## Installation
-
-### 1. Clone this repository to your computer
-Run this command in your terminal:
-
-`git clone https://github.com/StefanGerrits2/real-time-web-1920`
-### 2. Navigate into the root of the folder
-Run this command in your terminal:
-
-`cd real-time-web-1920`
-
-### 3 Installing packages
-Run this command in your terminal:
-
-`npm install`
-
-### 4. Viewing the website
-Run this command in your terminal:
-
-`npm run start`
-
-Now go to your `localhost:3000` in your browser.
-
-If you want to view in dev mode, run:
-
-`npm run dev`
-
-and (optional)
-
-`npm run watch:css` in another terminal if you want to update the css
 
 ## Sources
 

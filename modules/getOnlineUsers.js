@@ -1,9 +1,9 @@
-function getOnlineUsers(obj) {
-    var size = 0, key;
-    for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
+// function getOnlineUsers(obj) {
+//     let size = 0;
+//     for (key in obj) {
+//         if (obj.hasOwnProperty(key)) size++;
+//     }
+//     return size;
+// };
 
-module.exports = getOnlineUsers;
+// module.exports = getOnlineUsers;

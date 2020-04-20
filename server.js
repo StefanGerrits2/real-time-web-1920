@@ -17,7 +17,7 @@ const publicPath = path.join(__dirname, './public/');
 // Modules
 const dataHelper = require('./modules/dataHelper.js');
 const Fetcher = require('./modules/fetch.js');
-const getOnlineUsers = require('./modules/getOnlineUsers.js');
+// const getOnlineUsers = require('./modules/getOnlineUsers.js');
 
 // Controllers
 const home = require('./routes/home.js');
@@ -56,22 +56,41 @@ app
 // Save current online users
 let users = [];
 
+// Keep track of game data
+let gameData = {
+    1: {
+        haveBeenQuestionAsker: [],
+        correctAnswer: '',
+        round: 1,
+    },
+
+    // 2: etc
+};
+
 socket.on('connection', socket => {
     let currentUser = {};
+
     // New user connects
     socket.on('new-user', user => {
         
         // Create new user
         const newUser = {
-            id: '',
-            name: '',
+            id: socket.id,
+            name: user,
             score: 0,
-            type: '',
+            role: '',
         };
 
-        newUser.id = socket.id;
-        newUser.name = user;
-        newUser.score = 0;
+        // Append role (first to connect starts with question-asker role)
+        if(gameData[1].haveBeenQuestionAsker.length == 0) {
+            console.log('role is question asker');
+            newUser.role = 'question-asker';
+            gameData[1].haveBeenQuestionAsker.push(newUser.id);
+        }  
+        else {
+            console.log('role is guesser');
+            newUser.role = 'guesser';
+        }
 
         // Push new user into all users
         users.push(newUser);
@@ -87,11 +106,12 @@ socket.on('connection', socket => {
         socket.broadcast.emit('user-connected', user);
 
         // Update online users amount
-        const onlineUsers = getOnlineUsers(users);
-        socket.broadcast.emit('online-users', onlineUsers);
-        socket.emit('online-users', onlineUsers);
+        socket.broadcast.emit('online-users', users);
+        socket.emit('online-users', users);
 
-        console.log(users);
+        // console logs -> REMOVE LATER
+        console.log('users', users);
+        console.log('game data', gameData);
     });
 
     // Chat message
@@ -139,6 +159,10 @@ socket.on('connection', socket => {
                     const finalData = dataHelper(data);
                     console.log(finalData);
                     const temperature = Math.round(finalData.tempInCelcius);
+
+                    gameData[1].correctAnswer = temperature;
+                    console.log('correct answer is', gameData[1].correctAnswer);
+
                     socket.emit('personal-command-executed', command, allCommands, location, temperature);
                 }
 
@@ -165,9 +189,11 @@ socket.on('connection', socket => {
         console.log(users);
 
         // Update online users amount
-        const onlineUsers = getOnlineUsers(users);
-        socket.broadcast.emit('online-users', onlineUsers);
-        socket.emit('online-users', onlineUsers);
+        socket.broadcast.emit('online-users', users);
+        socket.emit('online-users', users);
+
+        // If person disconnects remove user from havebeenquestionasker
+        gameData[1].haveBeenQuestionAsker = gameData[1].haveBeenQuestionAsker.filter(item => item !== currentUser.id);
     });
 });
 

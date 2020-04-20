@@ -12,6 +12,56 @@ body {
     width: 100%;
     overflow-x: hidden;
     font-family: Muli-Light, sans-serif;
+    display: flex;
+}
+
+#score__container {
+    width: 20%;
+    background-color: #eef5f8;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#score-header {
+    background-color:#b734f9;
+    margin-top: -22px;
+    height: 128px;
+
+    & h1 {
+        color: white;
+        margin: 0;
+        padding: 1.5em 1em 1em 1em;
+    }
+}
+
+#icon__container {
+    width: 5em;
+}
+
+#supercontainer {
+    display: flex;
+    background-color: #d3e0e6;
+    margin-bottom: 1em;
+
+    & #icon__container {
+        display: flex;
+        align-items: center;
+
+        & img {
+            width: 75%;
+        }
+    }
+}
+
+#game__container {
+    width: 80%;
+}
+
+#user-points__container {
+    width: 100%;
+    padding: .2em;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 #messages__container {
