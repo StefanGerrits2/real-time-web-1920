@@ -157,7 +157,6 @@ function updateOnlineUsers(users) {
         rightContainer.id = 'icon__container';
 
         if (user.role === 'question-asker') {
-            console.log('questrion-asker');
             const icon = document.createElement('img');
             icon.src = 'images/question-picker.svg';
             rightContainer.appendChild(icon);
