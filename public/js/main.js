@@ -36,7 +36,6 @@ socket.on('user-disconnected', user => {
     appendMessage(`${user} disconnected`, 'disconnected');
 });
 
-
 // Global command executed that exist
 socket.on('global-command-executed', (command, user) => {
     messageContainer.setAttribute('style', `background-color: ${command}`);
@@ -72,7 +71,7 @@ socket.on('wrong-location', () => {
 });
 
 // Online users
-socket.on('online-users', users => {
+socket.on('scoreboard', users => {
     updateOnlineUsers(users);
 });
 
@@ -82,8 +81,24 @@ socket.on('start-game', () => {
 });
 
 // onclick nextround button
-socket.on('next-round', () => {
-    // next round
+// socket.on('next-round', user => {
+//     appendMessage(`${user} guessed the answer!`, 'server-message');
+// });
+
+socket.on('user-guessed', user => {
+    appendMessage(`${user} guessed the answer!`, 'server-message');
+});
+
+socket.on('no-typing-allowed', () => {
+    appendMessage('Now you can not type anymore, wait for the round to finish', 'server-message');
+});
+
+socket.on('question', (location) => {
+    appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
+});
+
+socket.on('question-see-answer', temperature => {
+    appendMessage(`The answer is ${temperature}, only you can see this`, 'server-message');
 });
 
 // Send message
@@ -134,7 +149,7 @@ function appendMessage(msg, type){
 
 // Scroll to bottom when message is sent/received
 function scrollToBottom() {
-    window.scrollTo(0, document.body.scrollHeight);
+    document.querySelector('#messages__container').scrollTo(0, document.body.scrollHeight);
 }
 
 // Update online user amount
@@ -156,9 +171,9 @@ function updateOnlineUsers(users) {
         const rightContainer = document.createElement('div');
         rightContainer.id = 'icon__container';
 
-        if (user.role === 'question-asker') {
+        if (user.role === 'question-picker') {
             const icon = document.createElement('img');
-            icon.src = 'images/question-picker.svg';
+            icon.src = 'images/think.png';
             rightContainer.appendChild(icon);
         }
 
@@ -166,7 +181,7 @@ function updateOnlineUsers(users) {
         const points = document.createElement('p');
 
         name.textContent = user.name;
-        points.textContent = 'Points: ' + user.score;
+        points.textContent = 'Points: ' + user.points;
 
         leftContainer.appendChild(name);
         leftContainer.appendChild(points);

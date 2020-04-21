@@ -64,6 +64,7 @@ let gameData = {
         haveBeenQuestionAsker: [],
         correctAnswer: '',
         round: 1,
+        guessedTheAnswer: []
     },
 
     // 2: etc
@@ -79,14 +80,14 @@ socket.on('connection', socket => {
         const newUser = {
             id: socket.id,
             name: user,
-            score: 0,
+            points: 0,
             role: '',
         };
 
         // Append role (first to connect starts with question-asker role)
         if(gameData[1].haveBeenQuestionAsker.length == 0) {
-            console.log('role is question asker');
-            newUser.role = 'question-asker';
+            console.log('role is question picker');
+            newUser.role = 'question-picker';
             gameData[1].haveBeenQuestionAsker.push(newUser.id);
         }  
         else {
@@ -108,8 +109,8 @@ socket.on('connection', socket => {
         socket.broadcast.emit('user-connected', user);
 
         // Update online users amount
-        socket.broadcast.emit('online-users', users);
-        socket.emit('online-users', users);
+        socket.broadcast.emit('scoreboard', users);
+        socket.emit('scoreboard', users);
 
         // console logs -> REMOVE LATER
         console.log('users', users);
@@ -119,8 +120,42 @@ socket.on('connection', socket => {
     // Chat message
     socket.on('send-chat-message', msg => {
         // Send messages
-        socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser.name });
-        socket.emit('your-chat-message', msg);
+
+        // If there's an answer and your the guesser, and you guess the answer
+        if (gameData[1].correctAnswer !== '' 
+            // If you're a guesser
+            && currentUser.role == 'guesser' 
+            // If your message is the answer
+            && msg == gameData[1].correctAnswer 
+            // If you have not guessed it yet
+            && gameData[1].guessedTheAnswer.indexOf(currentUser.id) <= -1) {
+
+            // Add points
+            currentUser.points += 100;
+            console.log(users);
+
+            // Update game info
+            gameData[1].guessedTheAnswer.push(currentUser.id);
+            console.log('game data', gameData);
+
+            // Emit that you guessed it
+            socket.emit('user-guessed', currentUser.name);
+            socket.broadcast.emit('user-guessed', currentUser.name);
+
+            // Emit scores
+            socket.broadcast.emit('scoreboard', users);
+            socket.emit('scoreboard', users);
+        }
+
+        if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1) {
+            socket.emit('no-typing-allowed');
+        }
+
+        // Normal chat message
+        else {
+            socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser.name });
+            socket.emit('your-chat-message', msg);
+        }
     });
 
     // Commands
@@ -151,21 +186,26 @@ socket.on('connection', socket => {
             return;
         }
 
-        if (command.includes(weatherCommand)) {
+        if (command.includes(weatherCommand) && currentUser.role === 'question-picker') {
             // Weather API test
             async function getTemperature(location) {
                 try {
                     const url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.TOKEN}`;
                     const data = await Fetcher.get(url);
-                    console.log(data);
                     const finalData = dataHelper(data);
-                    console.log(finalData);
                     const temperature = Math.round(finalData.tempInCelcius);
 
                     gameData[1].correctAnswer = temperature;
                     console.log('correct answer is', gameData[1].correctAnswer);
 
-                    socket.emit('personal-command-executed', command, allCommands, location, temperature);
+                    // Question started
+                    socket.emit('question', location);
+                    socket.broadcast.emit('question', location);
+
+                    // Show answer to question picker
+                    socket.emit('question-see-answer', temperature);
+
+                    console.log('game data', gameData);
                 }
 
                 catch(err) {
@@ -201,8 +241,8 @@ socket.on('connection', socket => {
         console.log(users);
 
         // Update online users amount
-        socket.broadcast.emit('online-users', users);
-        socket.emit('online-users', users);
+        socket.broadcast.emit('scoreboard', users);
+        socket.emit('scoreboard', users);
 
         // If person disconnects remove user from havebeenquestionasker
         gameData[1].haveBeenQuestionAsker = gameData[1].haveBeenQuestionAsker.filter(item => item !== currentUser.id);

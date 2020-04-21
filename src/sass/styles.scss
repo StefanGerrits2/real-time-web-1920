@@ -68,6 +68,9 @@ body {
 #messages__container {
     padding: 2em;
     min-height: 77vh;
+    max-height: 77vh;
+    overflow-y: auto;
+    background-image: url('/images/wallpaper.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
