@@ -89,8 +89,12 @@ socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
 });
 
-socket.on('no-typing-allowed', () => {
-    appendMessage('Now you can not type anymore, wait for the round to finish', 'server-message');
+socket.on('round-not-started', () => {
+    appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
+});
+
+socket.on('round-in-progress', () => {
+    appendMessage('Wait for the round to finish!', 'server-message');
 });
 
 socket.on('question', (location) => {

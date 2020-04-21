@@ -63,7 +63,7 @@ let gameData = {
     1: {
         haveBeenQuestionAsker: [],
         correctAnswer: '',
-        round: 1,
+        round: 0,
         guessedTheAnswer: []
     },
 
@@ -121,8 +121,15 @@ socket.on('connection', socket => {
     socket.on('send-chat-message', msg => {
         // Send messages
 
-        // If there's an answer and your the guesser, and you guess the answer
-        if (gameData[1].correctAnswer !== '' 
+        // If no round has been started yet
+        if (gameData[1].round === 0) {
+            socket.emit('round-not-started');
+        }
+
+        // Guess the answer
+        else if (
+            // If the current round isn't zero
+            gameData[1].round !== 0
             // If you're a guesser
             && currentUser.role == 'guesser' 
             // If your message is the answer
@@ -147,8 +154,9 @@ socket.on('connection', socket => {
             socket.emit('scoreboard', users);
         }
 
-        if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1) {
-            socket.emit('no-typing-allowed');
+        // If you already guessed the answer in the current round
+        else if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1) {
+            socket.emit('round-in-progress');
         }
 
         // Normal chat message
@@ -197,6 +205,10 @@ socket.on('connection', socket => {
 
                     gameData[1].correctAnswer = temperature;
                     console.log('correct answer is', gameData[1].correctAnswer);
+
+                    // Update game info
+                    gameData[1].round ++;
+                    gameData[1].guessedTheAnswer = [];
 
                     // Question started
                     socket.emit('question', location);
