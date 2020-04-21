@@ -138,7 +138,7 @@ socket.on('connection', socket => {
             && gameData[1].guessedTheAnswer.indexOf(currentUser.id) <= -1) {
 
             // Add points
-            currentUser.points += 100;
+            currentUser.points += 100 - 10 * gameData[1].guessedTheAnswer.length;
             console.log(users);
 
             // Update game info
