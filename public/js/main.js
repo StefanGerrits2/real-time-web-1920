@@ -76,6 +76,16 @@ socket.on('online-users', users => {
     updateOnlineUsers(users);
 });
 
+// onclick start game
+socket.on('start-game', () => {
+    // start game
+});
+
+// onclick nextround button
+socket.on('next-round', () => {
+    // next round
+});
+
 // Send message
 document.querySelector('#form').addEventListener('submit', function(event) {
     event.preventDefault();

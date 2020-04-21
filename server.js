@@ -21,6 +21,7 @@ const Fetcher = require('./modules/fetch.js');
 
 // Controllers
 const home = require('./routes/home.js');
+const chooseRoom = require('./routes/chooseRoom.js');
 const notFound = require('./routes/notFound.js');
 
 app
@@ -49,6 +50,7 @@ app
 
     // Get routes
     .get('/', home)
+    .get('/chooseRoom', chooseRoom)
 
     // 404 not found
     .use(notFound);
@@ -177,6 +179,16 @@ socket.on('connection', socket => {
         else {
             socket.emit('command-not-existing', allCommands);
         }
+    });
+
+    // Start game
+    socket.on('start-game', () => {
+        //
+    });
+
+    // Next round
+    socket.on('next-round', () => {
+        //
     });
 
     // Disconnect

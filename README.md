@@ -20,7 +20,7 @@ I was thinking of the following features:
 * Points will be updated each round, when the game is over the scoreboared will be shown.
 
 ## Data life cycle
-![image](https://user-images.githubusercontent.com/45566396/79754853-72669280-8318-11ea-982d-3668486cca99.png)
+![image](https://user-images.githubusercontent.com/45566396/79846016-3259eb00-83be-11ea-8503-d6c4733527a8.png)
 
 
 ## Installation
