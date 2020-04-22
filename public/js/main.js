@@ -80,23 +80,6 @@ socket.on('start-game', () => {
     // start game
 });
 
-// Next round
-socket.on('next-round', () => {
-    appendMessage('Next round!', 'server-message');
-});
-
-socket.on('user-guessed', user => {
-    appendMessage(`${user} guessed the answer!`, 'server-message');
-});
-
-socket.on('round-not-started', () => {
-    appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
-});
-
-socket.on('round-in-progress', () => {
-    appendMessage('Wait for the round to finish!', 'server-message');
-});
-
 // Start round
 socket.on('start-round', (location) => {
     appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
@@ -106,9 +89,30 @@ socket.on('start-round', (location) => {
     startTimer(duration, display);
 });
 
+// Next round
+socket.on('next-round', () => {
+    appendMessage('Next round!', 'server-message');
+});
+
+// Answer for the question-picker
 socket.on('question-see-answer', temperature => {
     appendMessage(`The answer is ${temperature}, only you can see this`, 'server-message');
 });
+
+// User guessed the answer
+socket.on('user-guessed', user => {
+    appendMessage(`${user} guessed the answer!`, 'server-message');
+});
+
+// Errors
+socket.on('round-not-started', () => {
+    appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
+});
+
+socket.on('round-in-progress', () => {
+    appendMessage('Wait for the round to finish!', 'server-message');
+});
+//
 
 // Send message
 document.querySelector('#form').addEventListener('submit', function(event) {
@@ -202,22 +206,21 @@ function updateOnlineUsers(users) {
     });
 }
 
+// Start timer for each round
 function startTimer(duration, display) {
     const interval = setInterval(function () {
 
+        // Count down
+        display.textContent = duration;
+        duration--;
+
         // If timer has reached zero
         if (duration == -1) {
+            // Stop timer
             clearInterval(interval);
 
             // Start new round
-            console.log('overr');;
-            socket.emit('next-round');
-        }
-
-        // Else count down
-        else {
-            display.textContent = duration;
-            duration--;
+            socket.emit('end-round');
         }
     }, 1000);
 }

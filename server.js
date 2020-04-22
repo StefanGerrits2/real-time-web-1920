@@ -65,7 +65,8 @@ let gameData = {
         correctAnswer: '',
         round: 0,
         activeRound: false,
-        guessedTheAnswer: []
+        guessedTheAnswer: [],
+        users: []
     },
 
     // 2: etc
@@ -98,6 +99,9 @@ socket.on('connection', socket => {
 
         // Push new user into all users
         users.push(newUser);
+
+        // Push new user into room
+        gameData[1].users.push(newUser.id);
 
         // Current User
         users.forEach(user => {
@@ -193,6 +197,7 @@ socket.on('connection', socket => {
             return;
         }
 
+        // Start round
         if (command.includes(weatherCommand) && currentUser.role === 'question-picker' && !gameData[1].activeRound) {
             // Weather API test
             async function getTemperature(location) {
@@ -239,10 +244,11 @@ socket.on('connection', socket => {
     });
 
     // Next round
-    socket.on('next-round', () => {
+    socket.on('end-round', () => {
         // Reset round information
         gameData[1].activeRound = false;
-        socket.emit('next-round');
+
+        // Start next round
         socket.broadcast.emit('next-round');
 
         console.log(gameData[1]);
