@@ -80,10 +80,10 @@ socket.on('start-game', () => {
     // start game
 });
 
-// onclick nextround button
-// socket.on('next-round', user => {
-//     appendMessage(`${user} guessed the answer!`, 'server-message');
-// });
+// Next round
+socket.on('next-round', () => {
+    appendMessage('Next round!', 'server-message');
+});
 
 socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
@@ -97,8 +97,13 @@ socket.on('round-in-progress', () => {
     appendMessage('Wait for the round to finish!', 'server-message');
 });
 
-socket.on('question', (location) => {
+// Start round
+socket.on('start-round', (location) => {
     appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
+
+    const duration = 10;
+    const display = document.querySelector('#time');
+    startTimer(duration, display);
 });
 
 socket.on('question-see-answer', temperature => {
@@ -195,4 +200,24 @@ function updateOnlineUsers(users) {
 
         document.querySelector('#scores').appendChild(superContainer);
     });
+}
+
+function startTimer(duration, display) {
+    const interval = setInterval(function () {
+
+        // If timer has reached zero
+        if (duration == -1) {
+            clearInterval(interval);
+
+            // Start new round
+            console.log('overr');;
+            socket.emit('next-round');
+        }
+
+        // Else count down
+        else {
+            display.textContent = duration;
+            duration--;
+        }
+    }, 1000);
 }

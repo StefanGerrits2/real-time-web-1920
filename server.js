@@ -17,7 +17,7 @@ const publicPath = path.join(__dirname, './public/');
 // Modules
 const dataHelper = require('./modules/dataHelper.js');
 const Fetcher = require('./modules/fetch.js');
-// const getOnlineUsers = require('./modules/getOnlineUsers.js');
+// const startTimer = require('./modules/startTimer.js');
 
 // Controllers
 const home = require('./routes/home.js');
@@ -64,6 +64,7 @@ let gameData = {
         haveBeenQuestionAsker: [],
         correctAnswer: '',
         round: 0,
+        activeRound: false,
         guessedTheAnswer: []
     },
 
@@ -122,16 +123,14 @@ socket.on('connection', socket => {
         // Send messages
 
         // If no round has been started yet
-        if (gameData[1].round === 0) {
+        if (!gameData[1].activeRound) {
             socket.emit('round-not-started');
         }
 
         // Guess the answer
         else if (
-            // If the current round isn't zero
-            gameData[1].round !== 0
             // If you're a guesser
-            && currentUser.role == 'guesser' 
+            currentUser.role == 'guesser' 
             // If your message is the answer
             && msg == gameData[1].correctAnswer 
             // If you have not guessed it yet
@@ -155,7 +154,7 @@ socket.on('connection', socket => {
         }
 
         // If you already guessed the answer in the current round
-        else if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1) {
+        else if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1 || currentUser.role == 'question-picker') {
             socket.emit('round-in-progress');
         }
 
@@ -182,7 +181,7 @@ socket.on('connection', socket => {
         }
 
         // If personal command exists
-        if (personalCommands.indexOf(command) > -1) {
+        else if (personalCommands.indexOf(command) > -1) {
             socket.emit('personal-command-executed', command, allCommands);
             return;
         }
@@ -194,7 +193,7 @@ socket.on('connection', socket => {
             return;
         }
 
-        if (command.includes(weatherCommand) && currentUser.role === 'question-picker') {
+        if (command.includes(weatherCommand) && currentUser.role === 'question-picker' && !gameData[1].activeRound) {
             // Weather API test
             async function getTemperature(location) {
                 try {
@@ -208,11 +207,12 @@ socket.on('connection', socket => {
 
                     // Update game info
                     gameData[1].round ++;
+                    gameData[1].activeRound = true;
                     gameData[1].guessedTheAnswer = [];
 
-                    // Question started
-                    socket.emit('question', location);
-                    socket.broadcast.emit('question', location);
+                    // Round started
+                    socket.emit('start-round', location);
+                    socket.broadcast.emit('start-round', location);
 
                     // Show answer to question picker
                     socket.emit('question-see-answer', temperature);
@@ -240,6 +240,17 @@ socket.on('connection', socket => {
 
     // Next round
     socket.on('next-round', () => {
+        // Reset round information
+        gameData[1].activeRound = false;
+        socket.emit('next-round');
+        socket.broadcast.emit('next-round');
+
+        console.log(gameData[1]);
+
+        // Change user roles (guesser and question-picker)
+        //
+        //
+        //
         //
     });
 

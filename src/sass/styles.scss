@@ -82,12 +82,11 @@ form {
     bottom: 0px;
     height: 4em;
     display: flex;
-    justify-content: space-between;
     border-top: 4px solid #eef5f8;
     background-color: white;
 
     & #input {
-        width: 70%;
+        width: 50%;
         height: 100%;
         box-sizing: border-box;
         padding-left: 2em;
@@ -108,18 +107,14 @@ form {
         padding: 0;
         width: 29%;
         height: 100%;
-        color: #585858;
-        background-color: white;
+        color: white;
+        background-color: #8243ed;
         border: none;
         cursor: pointer;
         outline: none;
         border-left: 4px solid #eef5f8;
         font-family: Muli-Bold, sans-serif;
         transition: 200ms ease-in-out;
-
-        &:hover {
-            background-color: #eef5f8;
-        }
     }
 }
 
