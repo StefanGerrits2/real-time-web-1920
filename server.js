@@ -61,12 +61,12 @@ let users = [];
 // Keep track of game data
 let gameData = {
     1: {
-        haveBeenQuestionAsker: [],
+        haveBeenQuestionPicker: [],
+        haveNotBeenQuestionPicker: [],
         correctAnswer: '',
         round: 0,
         activeRound: false,
         guessedTheAnswer: [],
-        users: []
     },
 
     // 2: etc
@@ -86,22 +86,24 @@ socket.on('connection', socket => {
             role: '',
         };
 
-        // Append role (first to connect starts with question-asker role)
-        if(gameData[1].haveBeenQuestionAsker.length == 0) {
+        // Append role (first to connect starts with question-picker role)
+        if(gameData[1].haveBeenQuestionPicker.length == 0) {
             console.log('role is question picker');
+            // Question picker role
             newUser.role = 'question-picker';
-            gameData[1].haveBeenQuestionAsker.push(newUser.id);
+            // Push into have been question picker yet
+            gameData[1].haveBeenQuestionPicker.push(newUser.id);
         }  
         else {
             console.log('role is guesser');
+            // Guesser role
             newUser.role = 'guesser';
+            // Push into have not been question picker yet
+            gameData[1].haveNotBeenQuestionPicker.push(newUser.id);
         }
 
         // Push new user into all users
         users.push(newUser);
-
-        // Push new user into room
-        gameData[1].users.push(newUser.id);
 
         // Current User
         users.forEach(user => {
@@ -199,6 +201,7 @@ socket.on('connection', socket => {
 
         // Start round
         if (command.includes(weatherCommand) && currentUser.role === 'question-picker' && !gameData[1].activeRound) {
+            console.log('aaaa');
             // Weather API test
             async function getTemperature(location) {
                 try {
@@ -245,19 +248,66 @@ socket.on('connection', socket => {
 
     // Next round
     socket.on('end-round', () => {
+        console.log('round endeddd');
         // Reset round information
         gameData[1].activeRound = false;
 
+        const gameOver = gameData[1].round === gameData[1].haveNotBeenQuestionPicker.concat(gameData[1].haveBeenQuestionPicker).length;
+
+        // End game
+        if (gameOver) {
+            socket.broadcast.emit('game-over');
+        }
+
         // Start next round
-        socket.broadcast.emit('next-round');
+        else {
+            socket.broadcast.emit('next-round');
 
-        console.log(gameData[1]);
+            // Reset roles if needed
+            // if (gameData[1].haveNotBeenQuestionPicker.length === 0) {
+            //     gameData[1].haveBeenQuestionPicker.forEach(user => {
+            //         gameData[1].haveNotBeenQuestionPicker.push(user);
+            //     });
+            //     gameData[1].haveBeenQuestionPicker = [];
+            // }
 
-        // Change user roles (guesser and question-picker)
-        //
-        //
-        //
-        //
+            console.log(gameData[1]);
+
+            // Change question picker to guesser
+            if(currentUser.role === 'question-picker') {
+                gameData[1].haveBeenQuestionPicker.forEach(questionPickers => {
+                    users.forEach(user => {
+                        if(user.id == questionPickers) {
+                        // Change role
+                            user.role = 'guesser';
+                        }
+                    });
+                });
+            }
+
+            const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
+
+            // If role is guesser, and you're the new question-picker
+            if (currentUser.role === 'guesser' && currentUser.id == newQuestionPicker) {
+            // Change a guesser to question picker
+
+                console.log('new picker', newQuestionPicker);
+                users.forEach(user => {
+                    if(user.id === newQuestionPicker) {
+                        user.role = 'question-picker';
+                    
+                        // Remove user from array
+                        gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
+                        // Add user to array
+                        gameData[1].haveBeenQuestionPicker.push(user.id);
+                    }
+                });
+            }
+
+            // Emit scores
+            socket.broadcast.emit('scoreboard', users);
+            socket.emit('scoreboard', users);
+        }
     });
 
     // Disconnect
@@ -273,8 +323,8 @@ socket.on('connection', socket => {
         socket.broadcast.emit('scoreboard', users);
         socket.emit('scoreboard', users);
 
-        // If person disconnects remove user from havebeenquestionasker
-        gameData[1].haveBeenQuestionAsker = gameData[1].haveBeenQuestionAsker.filter(item => item !== currentUser.id);
+        // If person disconnects remove user from havebeenquestionpicker
+        gameData[1].haveBeenQuestionPicker = gameData[1].haveBeenQuestionPicker.filter(item => item !== currentUser.id);
     });
 });
 

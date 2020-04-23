@@ -104,6 +104,11 @@ socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
 });
 
+// Game over
+socket.on('game-over', () => {
+    appendMessage('Game over', 'server-message');
+});
+
 // Errors
 socket.on('round-not-started', () => {
     appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
@@ -218,7 +223,7 @@ function startTimer(duration, display) {
         if (duration == -1) {
             // Stop timer
             clearInterval(interval);
-
+            console.log('end');
             // Start new round
             socket.emit('end-round');
         }
