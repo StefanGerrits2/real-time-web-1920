@@ -252,11 +252,12 @@ socket.on('connection', socket => {
         // Reset round information
         gameData[1].activeRound = false;
 
-        const gameOver = gameData[1].round === gameData[1].haveNotBeenQuestionPicker.concat(gameData[1].haveBeenQuestionPicker).length;
+        const userIdsInGame = gameData[1].haveNotBeenQuestionPicker.concat(gameData[1].haveBeenQuestionPicker);
+        const gameOver = gameData[1].round === userIdsInGame.length;
 
         // End game
         if (gameOver) {
-            socket.broadcast.emit('game-over');
+            socket.broadcast.emit('game-over', users);
         }
 
         // Start next round

@@ -105,8 +105,14 @@ socket.on('user-guessed', user => {
 });
 
 // Game over
-socket.on('game-over', () => {
-    appendMessage('Game over', 'server-message');
+socket.on('game-over', users => {
+    // Show scoreboard
+    appendMessage('Game over, scores:', 'server-message');
+
+    // Show scores
+    users.forEach(user => {
+        appendMessage(`${user.name} : ${user.points}`, 'server-message');
+    });
 });
 
 // Errors
