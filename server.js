@@ -55,25 +55,27 @@ app
     // 404 not found
     .use(notFound);
 
-// Save current online users
-let users = [];
-
 // Keep track of game data
 let gameData = {
     1: {
+        activeRound: false,
+        round: 0,
+        correctAnswer: '',
+        guessedTheAnswer: [],
+        users: [],
         haveBeenQuestionPicker: [],
         haveNotBeenQuestionPicker: [],
-        correctAnswer: '',
-        round: 0,
-        activeRound: false,
-        guessedTheAnswer: [],
     },
 
     // 2: etc
 };
 
 socket.on('connection', socket => {
+    // Current user
     let currentUser = {};
+
+    // All users
+    let users = gameData[1].users;
 
     // New user connects
     socket.on('new-user', user => {
@@ -103,7 +105,7 @@ socket.on('connection', socket => {
         }
 
         // Push new user into all users
-        users.push(newUser);
+        gameData[1].users.push(newUser);
 
         // Current User
         users.forEach(user => {
@@ -272,42 +274,33 @@ socket.on('connection', socket => {
             //     gameData[1].haveBeenQuestionPicker = [];
             // }
 
-            console.log(gameData[1]);
-
             // Change question picker to guesser
             if(currentUser.role === 'question-picker') {
-                gameData[1].haveBeenQuestionPicker.forEach(questionPickers => {
-                    users.forEach(user => {
-                        if(user.id == questionPickers) {
-                        // Change role
-                            user.role = 'guesser';
-                        }
-                    });
-                });
+                currentUser.role = 'guesser';
             }
 
-            const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
+            // If role is guesser AND haveBeenQuestionPicker length is equal to round
+            if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round) {
 
-            // If role is guesser, and you're the new question-picker
-            if (currentUser.role === 'guesser' && currentUser.id == newQuestionPicker) {
-            // Change a guesser to question picker
-
+                // Get new question picker
+                const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
                 console.log('new picker', newQuestionPicker);
-                users.forEach(user => {
-                    if(user.id === newQuestionPicker) {
-                        user.role = 'question-picker';
+                
+                if(currentUser.id === newQuestionPicker) {
+                    currentUser.role = 'question-picker';
                     
-                        // Remove user from array
-                        gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
-                        // Add user to array
-                        gameData[1].haveBeenQuestionPicker.push(user.id);
-                    }
-                });
+                    // Remove user from array
+                    gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
+                    // Add user to array
+                    gameData[1].haveBeenQuestionPicker.push(currentUser.id);
+                }
             }
 
             // Emit scores
             socket.broadcast.emit('scoreboard', users);
             socket.emit('scoreboard', users);
+
+            console.log(gameData[1]);
         }
     });
 

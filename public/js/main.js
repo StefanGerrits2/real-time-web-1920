@@ -117,7 +117,8 @@ socket.on('game-over', users => {
 
     // Sort on score
     // Source: https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
-    const sortedScores = scores.sort((a, b) => (a.color > b.color) ? 1 : -1);
+    const sortedScores = scores.sort((a, b) => (a.points < b.points) ? 1 : -1);
+    console.log(sortedScores);
 
     // Show sorted scores
     sortedScores.forEach(item => {
