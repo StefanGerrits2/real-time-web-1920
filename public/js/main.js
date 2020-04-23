@@ -109,9 +109,20 @@ socket.on('game-over', users => {
     // Show scoreboard
     appendMessage('Game over, scores:', 'server-message');
 
-    // Show scores
+    const scores = [];
+    
     users.forEach(user => {
-        appendMessage(`${user.name} : ${user.points}`, 'server-message');
+        scores.push({name: user.name, points: user.points});
+    });
+
+    // Sort on score
+    // Source: https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+    const sortedScores = scores.sort((a, b) => (a.color > b.color) ? 1 : -1);
+
+    // Show sorted scores
+    sortedScores.forEach(item => {
+        console.log(item);
+        appendMessage(`${item.name} : ${item.points}`, 'server-mnessage');
     });
 });
 

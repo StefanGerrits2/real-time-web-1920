@@ -257,12 +257,12 @@ socket.on('connection', socket => {
 
         // End game
         if (gameOver) {
-            socket.broadcast.emit('game-over', users);
+            socket.emit('game-over', users);
         }
 
         // Start next round
         else {
-            socket.broadcast.emit('next-round');
+            socket.emit('next-round');
 
             // Reset roles if needed
             // if (gameData[1].haveNotBeenQuestionPicker.length === 0) {
