@@ -84,7 +84,7 @@ socket.on('start-game', () => {
 socket.on('start-round', (location) => {
     appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
 
-    const duration = 10;
+    const duration = 9;
     const display = document.querySelector('#time');
     startTimer(duration, display);
 });
@@ -123,8 +123,19 @@ socket.on('game-over', users => {
     // Show sorted scores
     sortedScores.forEach(item => {
         console.log(item);
-        appendMessage(`${item.name} : ${item.points}`, 'server-mnessage');
+        appendMessage(`${item.name} : ${item.points}`, 'server-message');
     });
+
+    appendTimer('server-message');
+
+    const duration = 9;
+    const display = document.querySelector('#timer-game-over');
+    startTimer(duration, display);
+
+    // Redirect user to the homepage
+    setTimeout(() => {
+        window.location.pathname = '/';
+    }, 10000);
 });
 
 // Errors
@@ -179,6 +190,31 @@ function appendMessage(msg, type){
     newMessage.textContent = msg;
 
     outerMessage.appendChild(newMessage);
+    messageContainer.appendChild(outerMessage);
+    scrollToBottom();
+};
+
+// Append timer redirect to home
+function appendTimer(type){
+    // Outer message div
+    const outerMessage = document.createElement('div');
+    outerMessage.classList.add('outer-message');
+    outerMessage.classList.add(type);
+
+    // Message text
+    const sentence = document.createElement('p');
+    sentence.textContent = 'You will be sent to the homepage in';
+
+    const timer = document.createElement('p');
+    timer.id = 'timer-game-over';
+    timer.textContent = '10';
+
+    const seconds = document.createElement('p');
+    seconds.textContent = 'seconds';
+
+    outerMessage.appendChild(sentence);
+    outerMessage.appendChild(timer);
+    outerMessage.appendChild(seconds);
     messageContainer.appendChild(outerMessage);
     scrollToBottom();
 };

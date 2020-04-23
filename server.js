@@ -49,8 +49,8 @@ app
     }))
 
     // Get routes
-    .get('/', home)
-    .get('/chooseRoom', chooseRoom)
+    .get('/', chooseRoom)
+    .get('/game', home)
 
     // 404 not found
     .use(notFound);
@@ -260,6 +260,13 @@ socket.on('connection', socket => {
         // End game
         if (gameOver) {
             socket.emit('game-over', users);
+            
+            // Save scores on database??
+            //
+
+            // Reset game data
+            resetGame(1);
+            console.log(gameData[1]);
         }
 
         // Start next round
@@ -310,17 +317,34 @@ socket.on('connection', socket => {
         socket.broadcast.emit('user-disconnected', currentUser.name);
 
         // Remove user from users if they disconnect
-        users = users.filter(item => item.id !== socket.id);
+        gameData[1].users = gameData[1].users.filter(item => item.id !== socket.id);
         console.log(users);
 
         // Update online users amount
         socket.broadcast.emit('scoreboard', users);
         socket.emit('scoreboard', users);
 
-        // If person disconnects remove user from havebeenquestionpicker
+        // If person disconnects remove user from haveBeenQuestionPicker
         gameData[1].haveBeenQuestionPicker = gameData[1].haveBeenQuestionPicker.filter(item => item !== currentUser.id);
+
+        // If everyone left the game
+        if (gameData[1].users.length === 0) {
+            // Reset game data
+            resetGame(1);
+        }
+        console.log(gameData[1]);
     });
 });
+
+function resetGame(roomNumber) {
+    gameData[roomNumber].activeRound = false,
+    gameData[roomNumber].round = 0,
+    gameData[roomNumber].correctAnswer = '',
+    gameData[roomNumber].guessedTheAnswer = [],
+    gameData[roomNumber].users = [],
+    gameData[roomNumber].haveBeenQuestionPicker = [],
+    gameData[roomNumber].haveNotBeenQuestionPicker = [];
+};
 
 // Listen
 server.listen(port, () => console.log(`App listening on port ${port}!`));

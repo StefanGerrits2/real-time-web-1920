@@ -6,3 +6,26 @@
     border: 4px solid black;
     box-sizing: border-box;
 }
+
+#join__container {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('/images/wallpaper2.gif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+    display: flex;
+    align-items: center;
+}
+
+#join {
+    display: block;
+    font-size: 3vw;
+    background-color: #8243ed;
+    font-family: Muli-Bold;
+    text-decoration: none;
+    margin: 0em auto;
+    padding: 2em;
+    color: white;
+    border-radius: 2vw;
+}
