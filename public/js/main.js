@@ -84,6 +84,10 @@ socket.on('start-game', () => {
 socket.on('start-round', (location) => {
     appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
 
+    // Show timer
+    document.querySelector('#timer__container').setAttribute('style', 'display: flex');
+
+    // Timer settings
     const duration = 9;
     const display = document.querySelector('#time');
     startTimer(duration, display);
@@ -91,7 +95,11 @@ socket.on('start-round', (location) => {
 
 // Next round
 socket.on('next-round', () => {
+    // Next round message
     appendMessage('Next round!', 'server-message');
+
+    // Remove timer
+    document.querySelector('#timer__container').setAttribute('style', 'display: none');
 });
 
 // Answer for the question-picker
@@ -128,6 +136,7 @@ socket.on('game-over', users => {
 
     appendTimer('server-message');
 
+    // Add timer
     const duration = 9;
     const display = document.querySelector('#timer-game-over');
     startTimer(duration, display);
@@ -203,7 +212,7 @@ function appendTimer(type){
 
     // Message text
     const sentence = document.createElement('p');
-    sentence.textContent = 'You will be sent to the homepage in';
+    sentence.textContent = 'You will be send to the homepage in';
 
     const timer = document.createElement('p');
     timer.id = 'timer-game-over';
@@ -229,15 +238,27 @@ function updateOnlineUsers(users) {
     // Reset
     document.querySelector('#scores').textContent = '';
 
+    // Sort on score
+    // Source: https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+    const sortedScores = users.sort((a, b) => (a.points < b.points) ? 1 : -1);
+
+    let number = 0;
+
     // Reappend 
-    users.forEach(user => {
+    sortedScores.forEach(user => {
+        number++;
+
         // Super container
         const superContainer = document.createElement('div');
         superContainer.id = 'supercontainer';
 
-        // Textr container
+        // Text container
         const leftContainer = document.createElement('div');
-        leftContainer.id = 'user-points__container';
+        leftContainer.id = 'user-number__container';
+
+        // Text container
+        const middleContainer = document.createElement('div');
+        middleContainer.id = 'user-points__container';
 
         // Icon container
         const rightContainer = document.createElement('div');
@@ -251,14 +272,19 @@ function updateOnlineUsers(users) {
 
         const name = document.createElement('p');
         const points = document.createElement('p');
+        const place = document.createElement('p');
 
         name.textContent = user.name;
         points.textContent = 'Points: ' + user.points;
+        place.textContent = '#' + number;
 
-        leftContainer.appendChild(name);
-        leftContainer.appendChild(points);
+        leftContainer.appendChild(place);
+
+        middleContainer.appendChild(name);
+        middleContainer.appendChild(points);
 
         superContainer.appendChild(leftContainer);
+        superContainer.appendChild(middleContainer);
         superContainer.appendChild(rightContainer);
 
         document.querySelector('#scores').appendChild(superContainer);
@@ -282,4 +308,5 @@ function startTimer(duration, display) {
             socket.emit('end-round');
         }
     }, 1000);
+    scrollToBottom();
 }

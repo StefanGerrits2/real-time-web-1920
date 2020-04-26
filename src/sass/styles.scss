@@ -41,8 +41,10 @@ body {
 
 #supercontainer {
     display: flex;
-    background-color: #d3e0e6;
-    margin-bottom: 1em;
+
+    &:nth-child(odd) {
+        background-color: #d9e5eb;
+    }
 
     & #icon__container {
         display: flex;
@@ -59,21 +61,21 @@ body {
 }
 
 #user-points__container {
-    width: 100%;
+    width: 60%;
     padding: .2em;
     box-sizing: border-box;
     text-align: center;
 }
 
-#messages__container {
-    padding: 2em;
-    min-height: 77vh;
-    max-height: 77vh;
-    overflow-y: auto;
-    background-image: url('/images/wallpaper.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+#user-number__container {
+    display: flex;
+    align-items: center;
+    width: 20%;
+
+    & p {
+        margin: 0em auto;
+        font-size: 1.5em;
+    }
 }
 
 form {
@@ -86,7 +88,7 @@ form {
     background-color: white;
 
     & #input {
-        width: 50%;
+        width: 55%;
         height: 100%;
         box-sizing: border-box;
         padding-left: 2em;
@@ -105,7 +107,7 @@ form {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        width: 29%;
+        width: 25%;
         height: 100%;
         color: white;
         background-color: #8243ed;
@@ -115,13 +117,22 @@ form {
         border-left: 4px solid #eef5f8;
         font-family: Muli-Bold, sans-serif;
         transition: 200ms ease-in-out;
+
+        &:hover {
+            background-color: #9057f3;
+        }
     }
-}
+} 
 
 #messages__container {
-    padding-top: 6em;
-    padding-bottom: 5em;
-    padding: 7em 1em 4.5em 1em;
+    padding: 1em 2em;
+    min-height: 78vh;
+    max-height: 78vh;
+    overflow-y: auto;
+    background-image: url('/images/wallpaper.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 
     & #online-users__container {
         position: fixed;

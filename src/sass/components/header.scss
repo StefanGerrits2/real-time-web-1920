@@ -1,9 +1,11 @@
 header {
     margin: -22px 0 0 0;
     background-image: linear-gradient(to right, #8243ed , #b734f9);
-    position: fixed;
+    position: relative;
+    height: 8em;
     width: 100%;
-    border-bottom-right-radius: 20px;
+    display: flex;
+    justify-content: space-between;
 
     & h1 {
         margin: 0;
@@ -17,9 +19,30 @@ header {
         color: white;
     }
 
-    & p {
+    & div:first-of-type p {
         color: #d3d3d3;
         width: fit-content;
         margin: -1.75em 0em 1em 2em;
     }
+}
+
+#timer__container {
+    background-color: #d9e5eb;
+    padding: 1em;
+    width: fit-content;
+    box-sizing: border-box;
+    margin: 0;
+    align-items: center;
+    margin-top: 15px;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+
+    & span {
+        font-size: 1.2em;
+    }
+}
+
+#time {
+    margin: 0 auto;
 }
