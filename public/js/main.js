@@ -100,15 +100,20 @@ socket.on('next-round', () => {
     clearContainer();
 
     // Next round message
-    appendMessage('Next round!', 'server-message');
+    appendMessage('Next round!', 'next-round');
+
+    // Clear container after a delay
+    setTimeout(() => {
+        clearContainer();
+    }, 2900);
 
     // Remove timer
     document.querySelector('#timer__container').setAttribute('style', 'display: none');
 });
 
 // Answer for the question-picker
-socket.on('question-see-answer', temperature => {
-    appendMessage(`The answer is ${temperature}, only you can see this`, 'server-message');
+socket.on('question-see-answer', answer => {
+    appendMessage(`The answer is ${answer}, only you can see this`, 'server-message');
 });
 
 // Answer for the question-picker

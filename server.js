@@ -328,15 +328,18 @@ socket.on('connection', socket => {
             // Current question picker
             getQuestionPicker();
 
-            // Tell the guessers who's the new question picker
-            if (currentUser.role === 'guesser') {
-                socket.emit('new-question-picker', questionPicker);
-            }
+            // Timeout to wait for the Next round message to disappear
+            setTimeout(() => {
+                // Tell the guessers who's the new question picker
+                if (currentUser.role === 'guesser') {
+                    socket.emit('new-question-picker', questionPicker);
+                }
 
-            // Explain question picker how to pick a question
-            else {
-                socket.emit('question-help');
-            }
+                // Explain question picker how to pick a question
+                else {
+                    socket.emit('question-help');
+                }
+            }, 3000);
 
             // Update question picker icon
             socket.broadcast.emit('scoreboard', users);
