@@ -128,6 +128,7 @@ form {
     padding: 1em 2em;
     min-height: 78vh;
     max-height: 78vh;
+    height: 100%;
     overflow-y: auto;
     background-image: url('/images/wallpaper.png');
     background-repeat: no-repeat;
@@ -221,6 +222,23 @@ form {
     }
 }
 
+.question {
+    background-image: linear-gradient(to right, #256b99 , #4eb4da);
+    height: 80%;
+    width: 95%;
+    display: flex;
+    align-items: center;
+    opacity: .9;
+
+    & p {
+        width: 80%;
+        color: white;
+        font-size: 2.5em;
+        text-align: center;
+        margin: 0em auto;
+    }
+}
+
 .global-command-message {
     border-bottom: 7px solid #35f58f;
 }
@@ -230,23 +248,10 @@ form {
         font-size: 1.8em;
     }
 
-    #messages__container {
-        padding-top: 8em;
-    }
-
-    #messages__container #online-users__container {
-        margin-top: -1.2em;
-    }
-}
-
-@media screen and (max-width: 374px) {
-    #messages__container #online-users__container {
-        margin-top: 1em;
-    }
-}
-
-@media screen and (width: 374px) {
-    #messages__container #online-users__container {
-        margin-top: -1.2em;
+    .question {
+    
+        & p {
+            font-size: 1.5em;
+        }
     }
 }

@@ -70,12 +70,17 @@ let gameData = {
     // 2: etc
 };
 
+// Get Question Picker
+let questionPicker = '';
+
 socket.on('connection', socket => {
     // Current user
     let currentUser = {};
 
     // All users
     let users = gameData[1].users;
+
+    console.log('aasaas', users);
 
     // New user connects
     socket.on('new-user', user => {
@@ -96,6 +101,7 @@ socket.on('connection', socket => {
             // Push into have been question picker yet
             gameData[1].haveBeenQuestionPicker.push(newUser.id);
         }  
+
         else {
             console.log('role is guesser');
             // Guesser role
@@ -116,6 +122,19 @@ socket.on('connection', socket => {
 
         // Send chat message user connected
         socket.broadcast.emit('user-connected', user);
+
+        // Current question picker
+        getQuestionPicker();
+
+        // Explain question picker how to pick a question
+        if(currentUser.role === 'question-picker') {
+            socket.emit('question-help');
+        }
+
+        else {
+            // Tell everyone who's the question picker
+            socket.emit('new-question-picker', questionPicker);
+        }
 
         // Update online users amount
         socket.broadcast.emit('scoreboard', users);
@@ -220,6 +239,9 @@ socket.on('connection', socket => {
                     gameData[1].activeRound = true;
                     gameData[1].guessedTheAnswer = [];
 
+                    // Capitalize first letter
+                    location = location.charAt(0).toUpperCase() + location.substring(1);
+                 
                     // Round started
                     socket.emit('start-round', location);
                     socket.broadcast.emit('start-round', location);
@@ -303,7 +325,20 @@ socket.on('connection', socket => {
                 }
             }
 
-            // Emit scores
+            // Current question picker
+            getQuestionPicker();
+
+            // Tell the guessers who's the new question picker
+            if (currentUser.role === 'guesser') {
+                socket.emit('new-question-picker', questionPicker);
+            }
+
+            // Explain question picker how to pick a question
+            else {
+                socket.emit('question-help');
+            }
+
+            // Update question picker icon
             socket.broadcast.emit('scoreboard', users);
             socket.emit('scoreboard', users);
 
@@ -320,10 +355,6 @@ socket.on('connection', socket => {
         gameData[1].users = gameData[1].users.filter(item => item.id !== socket.id);
         console.log(users);
 
-        // Update online users amount
-        socket.broadcast.emit('scoreboard', users);
-        socket.emit('scoreboard', users);
-
         // If person disconnects remove user from haveBeenQuestionPicker
         gameData[1].haveBeenQuestionPicker = gameData[1].haveBeenQuestionPicker.filter(item => item !== currentUser.id);
 
@@ -332,9 +363,18 @@ socket.on('connection', socket => {
             // Reset game data
             resetGame(1);
         }
+    
         console.log(gameData[1]);
     });
 });
+
+function getQuestionPicker() {
+    gameData[1].users.forEach(user => {
+        if(user.role === 'question-picker') {
+            questionPicker = user.name;
+        }
+    });
+}
 
 function resetGame(roomNumber) {
     gameData[roomNumber].activeRound = false,

@@ -82,7 +82,9 @@ socket.on('start-game', () => {
 
 // Start round
 socket.on('start-round', (location) => {
-    appendMessage(`Question: what's the current temperature in ${location} (celcius)`, 'server-message');
+    clearContainer();
+
+    appendMessage(`Question: what is the current temperature in ${location}? (celcius)`, 'question');
 
     // Show timer
     document.querySelector('#timer__container').setAttribute('style', 'display: flex');
@@ -95,6 +97,8 @@ socket.on('start-round', (location) => {
 
 // Next round
 socket.on('next-round', () => {
+    clearContainer();
+
     // Next round message
     appendMessage('Next round!', 'server-message');
 
@@ -107,6 +111,22 @@ socket.on('question-see-answer', temperature => {
     appendMessage(`The answer is ${temperature}, only you can see this`, 'server-message');
 });
 
+// Answer for the question-picker
+socket.on('new-question-picker', user => {
+    appendMessage(`${user} is the question picker! Wait for him/her to start the round!`, 'server-message');
+
+    document.querySelector('#input').placeholder = 'Type your guess...';
+    document.querySelector('#send').value = 'Guess!';
+});
+
+// Answer for the question-picker
+socket.on('question-help', () => {
+    appendMessage('You are the question picker, type /weather <location> to start the round. Example: /weather amsterdam', 'server-message');
+
+    document.querySelector('#input').placeholder = 'Type your message...';
+    document.querySelector('#send').value = 'Send';
+});
+
 // User guessed the answer
 socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
@@ -114,6 +134,8 @@ socket.on('user-guessed', user => {
 
 // Game over
 socket.on('game-over', users => {
+    clearContainer();
+
     // Show scoreboard
     appendMessage('Game over, scores:', 'server-message');
 
@@ -231,6 +253,11 @@ function appendTimer(type){
 // Scroll to bottom when message is sent/received
 function scrollToBottom() {
     document.querySelector('#messages__container').scrollTo(0, document.body.scrollHeight);
+}
+
+// Clear container
+function clearContainer() {
+    messageContainer.textContent = '';
 }
 
 // Update online user amount
