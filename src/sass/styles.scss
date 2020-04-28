@@ -228,6 +228,8 @@ form {
     display: flex;
     align-items: center;
     opacity: .9;
+    position: relative;
+    padding-left: 0;
 
     & p {
         width: 80%;
@@ -235,6 +237,15 @@ form {
         font-size: 2.5em;
         text-align: center;
         margin: 0em auto;
+    }
+
+    & div {
+        width: 100%;
+        height: 2em;
+        background-color: black;
+        animation: loader 10s linear;
+        position: absolute;
+        bottom: 0;
     }
 }
 
@@ -247,6 +258,7 @@ form {
     display: flex;
     align-items: center;
     opacity: .9;
+    position: relative;
 
     & p {
         width: 80%;
@@ -254,6 +266,15 @@ form {
         text-align: center;
         margin: 0em auto;
         font-size: 2.5em;
+    }
+
+    & div {
+        width: 100%;
+        height: 2em;
+        background-color: black;
+        animation: loader 3s linear;
+        position: absolute;
+        bottom: 0;
     }
 }
 

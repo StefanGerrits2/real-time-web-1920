@@ -226,6 +226,12 @@ function appendMessage(msg, type){
     newMessage.textContent = msg;
 
     outerMessage.appendChild(newMessage);
+
+    if(type === 'next-round' || 'question') {
+        const loader = document.createElement('div');
+        outerMessage.appendChild(loader);
+    }
+
     messageContainer.appendChild(outerMessage);
     scrollToBottom();
 };

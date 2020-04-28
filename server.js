@@ -80,7 +80,7 @@ socket.on('connection', socket => {
     // All users
     let users = gameData[1].users;
 
-    console.log('aasaas', users);
+    console.log('users', users);
 
     // New user connects
     socket.on('new-user', user => {
@@ -95,7 +95,6 @@ socket.on('connection', socket => {
 
         // Append role (first to connect starts with question-picker role)
         if(gameData[1].haveBeenQuestionPicker.length == 0) {
-            console.log('role is question picker');
             // Question picker role
             newUser.role = 'question-picker';
             // Push into have been question picker yet
@@ -103,7 +102,6 @@ socket.on('connection', socket => {
         }  
 
         else {
-            console.log('role is guesser');
             // Guesser role
             newUser.role = 'guesser';
             // Push into have not been question picker yet
@@ -165,11 +163,9 @@ socket.on('connection', socket => {
 
             // Add points
             currentUser.points += 100 - 10 * gameData[1].guessedTheAnswer.length;
-            console.log(users);
 
             // Update game info
             gameData[1].guessedTheAnswer.push(currentUser.id);
-            console.log('game data', gameData);
 
             // Emit that you guessed it
             socket.emit('user-guessed', currentUser.name);
@@ -222,7 +218,6 @@ socket.on('connection', socket => {
 
         // Start round
         if (command.includes(weatherCommand) && currentUser.role === 'question-picker' && !gameData[1].activeRound) {
-            console.log('aaaa');
             // Weather API test
             async function getTemperature(location) {
                 try {
@@ -232,7 +227,6 @@ socket.on('connection', socket => {
                     const temperature = Math.round(finalData.tempInCelcius);
 
                     gameData[1].correctAnswer = temperature;
-                    console.log('correct answer is', gameData[1].correctAnswer);
 
                     // Update game info
                     gameData[1].round ++;
@@ -248,8 +242,6 @@ socket.on('connection', socket => {
 
                     // Show answer to question picker
                     socket.emit('question-see-answer', temperature);
-
-                    console.log('game data', gameData);
                 }
 
                 catch(err) {
@@ -272,7 +264,6 @@ socket.on('connection', socket => {
 
     // Next round
     socket.on('end-round', () => {
-        console.log('round endeddd');
         // Reset round information
         gameData[1].activeRound = false;
 
@@ -313,7 +304,6 @@ socket.on('connection', socket => {
 
                 // Get new question picker
                 const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
-                console.log('new picker', newQuestionPicker);
                 
                 if(currentUser.id === newQuestionPicker) {
                     currentUser.role = 'question-picker';
@@ -356,7 +346,6 @@ socket.on('connection', socket => {
 
         // Remove user from users if they disconnect
         gameData[1].users = gameData[1].users.filter(item => item.id !== socket.id);
-        console.log(users);
 
         // If person disconnects remove user from haveBeenQuestionPicker
         gameData[1].haveBeenQuestionPicker = gameData[1].haveBeenQuestionPicker.filter(item => item !== currentUser.id);
@@ -366,8 +355,6 @@ socket.on('connection', socket => {
             // Reset game data
             resetGame(1);
         }
-    
-        console.log(gameData[1]);
     });
 });
 
