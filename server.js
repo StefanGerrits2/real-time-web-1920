@@ -141,16 +141,18 @@ socket.on('connection', socket => {
 
             if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round && gameData[1].activeRound === true) {
 
-                setTimeout(() => {
-                    socket.emit('question-help');
-                }, 10000);
+                if(gameData[1].haveNotBeenQuestionPicker.length === 1) {
+                    setTimeout(() => {
+                        socket.emit('question-help');
+                    }, 10000);
+                }
 
                 // Make the user who joined mid game question picker
                 const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
                 
                 if (currentUser.id === newQuestionPicker) {
                     currentUser.role = 'question-picker';
-                    
+                
                     // Remove user from array
                     gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
                     // Add user to array
