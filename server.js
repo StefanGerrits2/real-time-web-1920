@@ -82,9 +82,6 @@ socket.on('connection', socket => {
     // New user connects
     socket.on('new-user', user => {
 
-
-        
-
         // Create new user
         const newUser = {
             id: socket.id,
@@ -135,9 +132,32 @@ socket.on('connection', socket => {
             socket.emit('new-question-picker', questionPicker);
         }
 
-        if(gameData[1].round !== 0) {
-            socket.emit('end-round');
+        // Update data if user joins mid game
+        if (gameData[1].round !== 0) {
+            socket.emit('wait-for-next-round');
+
+            // If role is guesser AND haveBeenQuestionPicker length is equal to round
+            if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round) {
+
+                // Get new question picker
+                const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
+                
+                if(currentUser.id === newQuestionPicker) {
+                    currentUser.role = 'question-picker';
+                    
+                    // Remove user from array
+                    gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
+                    // Add user to array
+                    gameData[1].haveBeenQuestionPicker.push(currentUser.id);
+
+                    // Send question help after delay 5 seconds
+                    setTimeout(() => {
+                        socket.emit('question-help');
+                    }, 5000);
+                }
+            }
         }
+        //
 
         // Update online users amount
         socket.broadcast.emit('scoreboard', users);

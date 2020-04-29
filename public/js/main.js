@@ -110,7 +110,7 @@ socket.on('start-round', (location, answers) => {
     // Show timer
     document.querySelector('#timer__container').setAttribute('style', 'display: flex');
 
-    // Timer settings
+    // Timer settings 9
     const duration = 9;
     const display = document.querySelector('#time');
     startTimer(duration, display);
@@ -390,6 +390,10 @@ function startTimer(duration, display) {
     scrollToBottom();
 }
 
-socket.on('user-spectating', () => {
-    appendMessage('someone is now spectating!', 'server-message');
+// socket.on('user-spectating', () => {
+//     appendMessage('someone is now spectating!', 'server-message');
+// });
+
+socket.on('wait-for-next-round', () => {
+    appendMessage('Wait for the next round', 'server-message');
 });

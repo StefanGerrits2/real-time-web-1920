@@ -223,13 +223,17 @@ form {
 
 .question {
     background-image: linear-gradient(to right, #256b99 , #4eb4da);
-    height: 80%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     opacity: .9;
     position: relative;
-    padding-left: 0;
+    padding: 0;
+    border-radius: 0px;
+    margin: 0;
+    flex-direction: column;
+    justify-content: space-evenly;
 
     & p {
         width: 80%;
@@ -246,6 +250,7 @@ form {
         animation: loader 10s linear;
         position: absolute;
         bottom: 0;
+        left: 0;
     }
 }
 
@@ -259,6 +264,7 @@ form {
     align-items: center;
     opacity: .9;
     position: relative;
+    border-radius: 0px;
 
     & p {
         width: 80%;
