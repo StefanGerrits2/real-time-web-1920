@@ -396,4 +396,9 @@ function startTimer(duration, display) {
 
 socket.on('wait-for-next-round', () => {
     appendMessage('Wait for the next round', 'server-message');
+
+    // Emit on delay
+    setTimeout(() => {
+        socket.emit('user-joined-midgame');
+    }, 10000);
 });

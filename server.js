@@ -127,16 +127,14 @@ socket.on('connection', socket => {
             socket.emit('question-help');
         }
 
-        else {
-            // Tell everyone who's the question picker
-            socket.emit('new-question-picker', questionPicker);
-        }
+        // Update online users amount
+        socket.broadcast.emit('scoreboard', users);
+        socket.emit('scoreboard', users);
 
         // Update data if user joins mid game
         if (gameData[1].round !== 0) {
             socket.emit('wait-for-next-round');
 
-            // If role is guesser AND haveBeenQuestionPicker length is equal to round
             if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round) {
 
                 // Get new question picker
@@ -149,19 +147,10 @@ socket.on('connection', socket => {
                     gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(e => e !== newQuestionPicker);
                     // Add user to array
                     gameData[1].haveBeenQuestionPicker.push(currentUser.id);
-
-                    // Send question help after delay 5 seconds
-                    setTimeout(() => {
-                        socket.emit('question-help');
-                    }, 5000);
                 }
             }
         }
         //
-
-        // Update online users amount
-        socket.broadcast.emit('scoreboard', users);
-        socket.emit('scoreboard', users);
     });
 
     // Chat message
@@ -403,10 +392,16 @@ socket.on('connection', socket => {
                 }
             }, 3000);
 
-            // Update question picker icon
-            socket.broadcast.emit('scoreboard', users);
-            socket.emit('scoreboard', users);
+            // Update question picker icon after next round message
+            setTimeout(() => {
+                socket.broadcast.emit('scoreboard', users);
+                socket.emit('scoreboard', users);
+            }, 3000);
         }
+    });
+
+    socket.on('user-joined-midgame', () => {
+        socket.emit('question-help');
     });
 
     // Disconnect
