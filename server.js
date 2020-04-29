@@ -73,19 +73,18 @@ let gameData = {
 let questionPicker = '';
 
 socket.on('connection', socket => {
-    console.log('connected');
-
     // Current user
     let currentUser = {};
 
     // All users
     let users = gameData[1].users;
 
-    console.log('users', users);
-
     // New user connects
     socket.on('new-user', user => {
+
+
         
+
         // Create new user
         const newUser = {
             id: socket.id,
@@ -136,13 +135,13 @@ socket.on('connection', socket => {
             socket.emit('new-question-picker', questionPicker);
         }
 
+        if(gameData[1].round !== 0) {
+            socket.emit('end-round');
+        }
+
         // Update online users amount
         socket.broadcast.emit('scoreboard', users);
         socket.emit('scoreboard', users);
-
-        // console logs -> REMOVE LATER
-        console.log('users', users);
-        console.log('game data', gameData);
     });
 
     // Chat message
@@ -192,16 +191,12 @@ socket.on('connection', socket => {
         else {
             socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser.name });
             socket.emit('your-chat-message', msg);
-
-            console.log(currentUser);
         }
     });
 
     socket.on('multipleChoice-guessed', () => {
         // Count guessed answers per round
-        console.log('dgaaaaaaaaaaaaaaaaaa')
         currentUser.multipleChoiceGuessed++;
-        console.log(currentUser);
     });
 
     // Commands
@@ -235,7 +230,7 @@ socket.on('connection', socket => {
 
         // Start round
         if (
-            command.includes(tempCommand) || command.includes(multipleChoiceTempCommand) 
+            (command.includes(tempCommand) || command.includes(multipleChoiceTempCommand))
             && currentUser.role === 'question-picker' 
             && !gameData[1].activeRound
         ) {
@@ -245,7 +240,6 @@ socket.on('connection', socket => {
                     const url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.TOKEN}`;
                     const data = await Fetcher.get(url);
                     const finalData = dataHelper(data);
-                    console.log(finalData);
 
                     const temperature = Math.round(finalData.tempInCelcius);
 
@@ -279,7 +273,6 @@ socket.on('connection', socket => {
 
                         // Shuffle answers
                         answers = shuffle(answers);
-                        console.log(answers);
                     }
 
                     // Update game info
@@ -333,7 +326,6 @@ socket.on('connection', socket => {
 
             // Reset game data
             resetGame(1);
-            console.log(gameData[1]);
         }
 
         // Start next round
@@ -348,6 +340,7 @@ socket.on('connection', socket => {
             //     gameData[1].haveBeenQuestionPicker = [];
             // }
 
+            console.log('before', gameData[1]);
             // Change question picker to guesser
             if(currentUser.role === 'question-picker') {
                 currentUser.role = 'guesser';
@@ -368,6 +361,8 @@ socket.on('connection', socket => {
                     gameData[1].haveBeenQuestionPicker.push(currentUser.id);
                 }
             }
+
+            console.log('after', gameData[1]);
 
             // Reset hasGuessed number
             currentUser.multipleChoiceGuessed = 0;
@@ -391,8 +386,6 @@ socket.on('connection', socket => {
             // Update question picker icon
             socket.broadcast.emit('scoreboard', users);
             socket.emit('scoreboard', users);
-
-            console.log(gameData[1]);
         }
     });
 
@@ -412,6 +405,10 @@ socket.on('connection', socket => {
             // Reset game data
             resetGame(1);
         }
+
+        // Update scoreboard
+        socket.broadcast.emit('scoreboard', gameData[1].users);
+        socket.emit('scoreboard', gameData[1].users);
     });
 });
 

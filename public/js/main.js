@@ -389,3 +389,7 @@ function startTimer(duration, display) {
     }, 1000);
     scrollToBottom();
 }
+
+socket.on('user-spectating', () => {
+    appendMessage('someone is now spectating!', 'server-message');
+});
