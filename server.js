@@ -123,8 +123,12 @@ socket.on('connection', socket => {
         getQuestionPicker();
 
         // Explain question picker how to pick a question
-        if(currentUser.role === 'question-picker') {
+        if (currentUser.role === 'question-picker') {
             socket.emit('question-help');
+        }
+
+        else {
+            socket.emit('new-question-picker', questionPicker);
         }
 
         // Update online users amount
@@ -135,12 +139,16 @@ socket.on('connection', socket => {
         if (gameData[1].round !== 0) {
             socket.emit('wait-for-next-round');
 
-            if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round) {
+            if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round && gameData[1].activeRound === true) {
 
-                // Get new question picker
+                setTimeout(() => {
+                    socket.emit('question-help');
+                }, 10000);
+
+                // Make the user who joined mid game question picker
                 const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
                 
-                if(currentUser.id === newQuestionPicker) {
+                if (currentUser.id === newQuestionPicker) {
                     currentUser.role = 'question-picker';
                     
                     // Remove user from array
@@ -387,8 +395,8 @@ socket.on('connection', socket => {
                 }
 
                 // Explain question picker how to pick a question
-                else {
-                    socket.emit('question-help');
+                if (currentUser.role === 'question-picker') {
+                    socket.emit('question-help', questionPicker);
                 }
             }, 3000);
 
@@ -398,10 +406,6 @@ socket.on('connection', socket => {
                 socket.emit('scoreboard', users);
             }, 3000);
         }
-    });
-
-    socket.on('user-joined-midgame', () => {
-        socket.emit('question-help');
     });
 
     // Disconnect
