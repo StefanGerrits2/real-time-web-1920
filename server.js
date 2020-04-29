@@ -139,13 +139,15 @@ socket.on('connection', socket => {
         if (gameData[1].round !== 0) {
             socket.emit('wait-for-next-round');
 
-            if (currentUser.role === 'guesser' && gameData[1].haveBeenQuestionPicker.length === gameData[1].round && gameData[1].activeRound === true) {
-
-                if(gameData[1].haveNotBeenQuestionPicker.length === 1) {
-                    setTimeout(() => {
-                        socket.emit('question-help');
-                    }, 10000);
-                }
+            if (
+                currentUser.role === 'guesser' 
+                && gameData[1].haveBeenQuestionPicker.length === gameData[1].round 
+                && gameData[1].activeRound === true
+                && gameData[1].haveNotBeenQuestionPicker.length === 1
+            ) {
+                setTimeout(() => {
+                    socket.emit('question-help');
+                }, 10000);
 
                 // Make the user who joined mid game question picker
                 const newQuestionPicker = gameData[1].haveNotBeenQuestionPicker[0];
@@ -160,7 +162,6 @@ socket.on('connection', socket => {
                 }
             }
         }
-        //
     });
 
     // Chat message
