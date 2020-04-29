@@ -53,7 +53,7 @@ socket.on('personal-command-executed', (command, commands, location, celcius) =>
         appendMessage(`Commands: ${commands}`, 'server-message');
     }
  
-    if (command.includes('weather')) {
+    if (command.includes('temp')) {
         console.log(command);
         appendMessage(`The current temperature in ${location} is ${celcius} degrees`, 'server-message');
     }
@@ -81,11 +81,32 @@ socket.on('start-game', () => {
 });
 
 // Start round
-socket.on('start-round', (location) => {
+socket.on('start-round', (location, answers) => {
     clearContainer();
 
-    appendMessage(`Question: what is the current temperature in ${location}? (celcius)`, 'question');
+    // If there's 1 answer (not multiple choice)
+    if(answers.length == 1) {
+        appendMessage(`Question: what is the current temperature in ${location}? (celcius)`, 'question');
+    }
 
+    // If it's a multiple choice question
+    else {
+        appendMessage(`Question: what is the current temperature in ${location}? (celcius)`, 'question', true, answers);
+    
+        // Click answer
+        document.addEventListener('click', function(e){
+            if (e.target && e.target.classList == 'answer'){
+                // Keep track of guessed multiple choice
+                socket.emit('multipleChoice-guessed');
+
+                // Send answer
+                document.querySelector('#input').value = e.target.textContent;
+                document.querySelector('#send').click();
+                console.log('click');
+            }
+        });
+    }
+    
     // Show timer
     document.querySelector('#timer__container').setAttribute('style', 'display: flex');
 
@@ -126,7 +147,7 @@ socket.on('new-question-picker', user => {
 
 // Answer for the question-picker
 socket.on('question-help', () => {
-    appendMessage('You are the question picker, type /weather <location> to start the round. Example: /weather amsterdam', 'server-message');
+    appendMessage('You are the question picker, type /temp <location> to start the round. Example: /temp  amsterdam', 'server-message');
 
     document.querySelector('#input').placeholder = 'Type your message...';
     document.querySelector('#send').value = 'Send';
@@ -135,6 +156,11 @@ socket.on('question-help', () => {
 // User guessed the answer
 socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
+});
+
+// User already guessed multiple choice
+socket.on('already-guessed', () => {
+    appendMessage('You have already guessed!', 'server-message');
 });
 
 // Game over
@@ -214,7 +240,7 @@ document.querySelector('#form').addEventListener('submit', function(event) {
 });
 
 // Append chat texts
-function appendMessage(msg, type){
+function appendMessage(msg, type, multipleChoice, answers){
     // Outer message div
     const outerMessage = document.createElement('div');
     outerMessage.classList.add('outer-message');
@@ -227,9 +253,24 @@ function appendMessage(msg, type){
 
     outerMessage.appendChild(newMessage);
 
-    if(type === 'next-round' || 'question') {
+    if (type === 'next-round' || 'question') {
         const loader = document.createElement('div');
         outerMessage.appendChild(loader);
+    }
+
+    // If it's a multiplechoice question, append buttons
+    if (multipleChoice) {
+        const text = document.createElement('p');
+        text.textContent = 'Multiple choice! you can only guess 1 of these answers.';
+        outerMessage.appendChild(text);
+
+        // Create answers
+        answers.forEach(answer => {
+            const button = document.createElement('button');
+            button.className = 'answer';
+            button.textContent = answer;
+            outerMessage.appendChild(button);
+        });
     }
 
     messageContainer.appendChild(outerMessage);

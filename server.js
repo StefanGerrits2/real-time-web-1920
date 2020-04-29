@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
-require('dotenv').config();
 
 const app = express();
 const server = require('http').Server(app);
@@ -17,7 +16,7 @@ const publicPath = path.join(__dirname, './public/');
 // Modules
 const dataHelper = require('./modules/dataHelper.js');
 const Fetcher = require('./modules/fetch.js');
-// const startTimer = require('./modules/startTimer.js');
+const shuffle = require('./modules/shuffleAnswers.js');
 
 // Controllers
 const home = require('./routes/home.js');
@@ -74,6 +73,8 @@ let gameData = {
 let questionPicker = '';
 
 socket.on('connection', socket => {
+    console.log('connected');
+
     // Current user
     let currentUser = {};
 
@@ -91,6 +92,7 @@ socket.on('connection', socket => {
             name: user,
             points: 0,
             role: '',
+            multipleChoiceGuessed: 0
         };
 
         // Append role (first to connect starts with question-picker role)
@@ -152,6 +154,10 @@ socket.on('connection', socket => {
             socket.emit('round-not-started');
         }
 
+        else if (currentUser.multipleChoiceGuessed >= 2) {
+            socket.emit('already-guessed');
+        }
+
         // Guess the answer
         else if (
             // If you're a guesser
@@ -159,7 +165,8 @@ socket.on('connection', socket => {
             // If your message is the answer
             && msg == gameData[1].correctAnswer 
             // If you have not guessed it yet
-            && gameData[1].guessedTheAnswer.indexOf(currentUser.id) <= -1) {
+            && gameData[1].guessedTheAnswer.indexOf(currentUser.id) <= -1
+        ) {
 
             // Add points
             currentUser.points += 100 - 10 * gameData[1].guessedTheAnswer.length;
@@ -185,15 +192,25 @@ socket.on('connection', socket => {
         else {
             socket.broadcast.emit('their-chat-message', { msg: msg, user: currentUser.name });
             socket.emit('your-chat-message', msg);
+
+            console.log(currentUser);
         }
+    });
+
+    socket.on('multipleChoice-guessed', () => {
+        // Count guessed answers per round
+        console.log('dgaaaaaaaaaaaaaaaaaa')
+        currentUser.multipleChoiceGuessed++;
+        console.log(currentUser);
     });
 
     // Commands
     socket.on('send-command', command => {
         // Commands
-        const personalCommands = ['commands', 'weather'];
+        const personalCommands = ['commands', 'temp'];
         const globalCommands = ['red', 'blue', 'orange', 'yellow', 'green', 'black', 'white'];
-        const weatherCommand = 'weather';
+        const tempCommand = 'temp';
+        const multipleChoiceTempCommand = 'multitemp';
         const allCommands = personalCommands.concat(globalCommands);
 
         let location = '';
@@ -217,16 +234,53 @@ socket.on('connection', socket => {
         }
 
         // Start round
-        if (command.includes(weatherCommand) && currentUser.role === 'question-picker' && !gameData[1].activeRound) {
+        if (
+            command.includes(tempCommand) || command.includes(multipleChoiceTempCommand) 
+            && currentUser.role === 'question-picker' 
+            && !gameData[1].activeRound
+        ) {
             // Weather API test
             async function getTemperature(location) {
                 try {
                     const url = `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.TOKEN}`;
                     const data = await Fetcher.get(url);
                     const finalData = dataHelper(data);
+                    console.log(finalData);
+
                     const temperature = Math.round(finalData.tempInCelcius);
 
                     gameData[1].correctAnswer = temperature;
+
+                    // If multiple choice
+                    let answers = [temperature];
+                    // Get 3 wrong answers and put them in array.
+                    if (command.includes(multipleChoiceTempCommand)) {
+                        function getWrongAnswers() {
+
+                            // Get wrong answers between 0 and 21 degrees
+                            const wrongAnswer = Math.floor(Math.random() * 21);
+                            if (wrongAnswer == temperature) {
+                                getWrongAnswers();
+                            }
+
+                            if (answers.indexOf(wrongAnswer) > -1) {
+                                getWrongAnswers();
+                            }
+
+                            else {
+                                answers.push(wrongAnswer);
+
+                                if(answers.length !== 4) {
+                                    getWrongAnswers();
+                                }
+                            }
+                        };
+                        getWrongAnswers();
+
+                        // Shuffle answers
+                        answers = shuffle(answers);
+                        console.log(answers);
+                    }
 
                     // Update game info
                     gameData[1].round ++;
@@ -237,8 +291,8 @@ socket.on('connection', socket => {
                     location = location.charAt(0).toUpperCase() + location.substring(1);
                  
                     // Round started
-                    socket.emit('start-round', location);
-                    socket.broadcast.emit('start-round', location);
+                    socket.emit('start-round', location, answers);
+                    socket.broadcast.emit('start-round', location, answers);
 
                     // Show answer to question picker
                     socket.emit('question-see-answer', temperature);
@@ -315,6 +369,9 @@ socket.on('connection', socket => {
                 }
             }
 
+            // Reset hasGuessed number
+            currentUser.multipleChoiceGuessed = 0;
+
             // Current question picker
             getQuestionPicker();
 
@@ -366,14 +423,14 @@ function getQuestionPicker() {
     });
 }
 
-function resetGame(roomNumber) {
-    gameData[roomNumber].activeRound = false,
-    gameData[roomNumber].round = 0,
-    gameData[roomNumber].correctAnswer = '',
-    gameData[roomNumber].guessedTheAnswer = [],
-    gameData[roomNumber].users = [],
-    gameData[roomNumber].haveBeenQuestionPicker = [],
-    gameData[roomNumber].haveNotBeenQuestionPicker = [];
+function resetGame(room) {
+    gameData[room].activeRound = false,
+    gameData[room].round = 0,
+    gameData[room].correctAnswer = '',
+    gameData[room].guessedTheAnswer = [],
+    gameData[room].users = [],
+    gameData[room].haveBeenQuestionPicker = [],
+    gameData[room].haveNotBeenQuestionPicker = [];
 };
 
 // Listen
