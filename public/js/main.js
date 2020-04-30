@@ -73,8 +73,8 @@ socket.on('wrong-location', () => {
 });
 
 // Online users
-socket.on('scoreboard', users => {
-    updateOnlineUsers(users);
+socket.on('scoreboard', (users, currentRound) => {
+    updateOnlineUsers(users, currentRound);
 });
 
 // onclick start game
@@ -148,7 +148,7 @@ socket.on('new-question-picker', user => {
 
 // Answer for the question-picker
 socket.on('question-help', () => {
-    appendMessage('You are the question picker, type /temp <location> to start the round, you can also type /multi <location> to start a Multiple Choice question! Example: /temp amsterdam or /multitemp amsterdam', 'server-message');
+    appendMessage('You are the question picker, type /temp <location> to start the round, you can also type /multitemp <location> to start a Multiple Choice question! Example: /temp amsterdam or /multitemp amsterdam', 'server-message');
 
     document.querySelector('#input').placeholder = 'Type your message...';
     document.querySelector('#send').value = 'Send';
@@ -289,7 +289,11 @@ function clearContainer() {
 }
 
 // Update online users and scores
-function updateOnlineUsers(users) {
+function updateOnlineUsers(users, currentRound) {
+    // Round x of x
+    const roundInfo = document.querySelector('#roundInfo');
+    roundInfo.textContent = `Round ${currentRound} of ${users.length}`;
+
     // Reset
     document.querySelector('#scores').textContent = '';
 

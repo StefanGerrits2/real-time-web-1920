@@ -132,8 +132,8 @@ socket.on('connection', socket => {
         }
 
         // Update online users amount
-        socket.broadcast.emit('scoreboard', users);
-        socket.emit('scoreboard', users);
+        socket.broadcast.emit('scoreboard', users, gameData[1].round);
+        socket.emit('scoreboard', users, gameData[1].round);
 
         // Update data if user joins mid game
         if (gameData[1].round !== 0) {
@@ -199,8 +199,8 @@ socket.on('connection', socket => {
             socket.broadcast.emit('user-guessed', currentUser.name);
 
             // Emit scores
-            socket.broadcast.emit('scoreboard', users);
-            socket.emit('scoreboard', users);
+            socket.broadcast.emit('scoreboard', users, gameData[1].round);
+            socket.emit('scoreboard', users, gameData[1].round);
         }
 
         // If you already guessed the answer in the current round
@@ -310,6 +310,10 @@ socket.on('connection', socket => {
 
                     // Show answer to question picker
                     socket.emit('question-see-answer', temperature);
+
+                    // Emit scores
+                    socket.broadcast.emit('scoreboard', users, gameData[1].round);
+                    socket.emit('scoreboard', users, gameData[1].round);
                 }
 
                 catch(err) {
@@ -405,8 +409,8 @@ socket.on('connection', socket => {
 
             // Update question picker icon after next round message
             setTimeout(() => {
-                socket.broadcast.emit('scoreboard', users);
-                socket.emit('scoreboard', users);
+                socket.broadcast.emit('scoreboard', users, gameData[1].round);
+                socket.emit('scoreboard', users, gameData[1].round);
             }, 3000);
         }
     });
@@ -429,8 +433,8 @@ socket.on('connection', socket => {
         }
 
         // Update scoreboard
-        socket.broadcast.emit('scoreboard', gameData[1].users);
-        socket.emit('scoreboard', gameData[1].users);
+        socket.broadcast.emit('scoreboard', gameData[1].users, gameData[1].round);
+        socket.emit('scoreboard', gameData[1].users, gameData[1].round);
     });
 });
 

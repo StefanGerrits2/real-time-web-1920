@@ -27,11 +27,20 @@ body {
     background-color:#b734f9;
     margin-top: -22px;
     height: 128px;
+    position: relative;
 
     & h1 {
         color: white;
         margin: 0;
         padding: 1.5em 1em 1em 1em;
+    }
+
+    #roundInfo {
+        position: absolute;
+        bottom: -.5em;
+        color: white;
+        left: 0;
+        right: 0;
     }
 }
 
