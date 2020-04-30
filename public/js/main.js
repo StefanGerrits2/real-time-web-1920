@@ -12,6 +12,8 @@ if (user == undefined || '' ) {
     user = 'Guest';
 }
 
+let multipleChoiceQuestion = false;
+
 // You joined message
 appendMessage(`You joined (${user})`, 'joined');
 socket.emit('new-user', user);
@@ -91,14 +93,13 @@ socket.on('start-round', (location, answers) => {
 
     // If it's a multiple choice question
     else {
+        multipleChoiceQuestion = true;
+
         appendMessage(`Question: what is the current temperature in ${location}? (celcius)`, 'question', true, answers);
     
         // Click answer
         document.addEventListener('click', function(e){
             if (e.target && e.target.classList == 'answer'){
-                // Keep track of guessed multiple choice
-                socket.emit('multipleChoice-guessed');
-
                 // Send answer
                 document.querySelector('#input').value = e.target.textContent;
                 document.querySelector('#send').click();
@@ -160,7 +161,7 @@ socket.on('user-guessed', user => {
 
 // User already guessed multiple choice
 socket.on('already-guessed', () => {
-    appendMessage('You have already guessed!', 'server-message');
+    appendMessage('You already guessed this round!', 'server-message');
 });
 
 // Game over
@@ -217,7 +218,11 @@ document.querySelector('#form').addEventListener('submit', function(event) {
         }
         // Normal message
         else {
-            console.log('new message');
+            if (multipleChoiceQuestion) {
+                // Keep track of guessed multiple choice
+                socket.emit('multipleChoice-guessed');
+            }
+            
             socket.emit('send-chat-message', msg);
         }
     }
@@ -356,6 +361,7 @@ function startTimer(duration, display) {
             console.log('end');
             // Start new round
             socket.emit('end-round');
+            multipleChoiceQuestion = false;
         }
     }, 1000);
     scrollToBottom();

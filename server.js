@@ -166,6 +166,7 @@ socket.on('connection', socket => {
 
     // Chat message
     socket.on('send-chat-message', msg => {
+        console.log(currentUser);
         // Send messages
 
         // If no round has been started yet
@@ -173,7 +174,7 @@ socket.on('connection', socket => {
             socket.emit('round-not-started');
         }
 
-        else if (currentUser.multipleChoiceGuessed >= 2) {
+        else if (currentUser.multipleChoiceGuessed >= 2 && currentUser.role === 'guesser') {
             socket.emit('already-guessed');
         }
 
@@ -360,7 +361,6 @@ socket.on('connection', socket => {
             //     gameData[1].haveBeenQuestionPicker = [];
             // }
 
-            console.log('before', gameData[1]);
             // Change question picker to guesser
             if(currentUser.role === 'question-picker') {
                 currentUser.role = 'guesser';
@@ -381,8 +381,6 @@ socket.on('connection', socket => {
                     gameData[1].haveBeenQuestionPicker.push(currentUser.id);
                 }
             }
-
-            console.log('after', gameData[1]);
 
             // Reset hasGuessed number
             currentUser.multipleChoiceGuessed = 0;
