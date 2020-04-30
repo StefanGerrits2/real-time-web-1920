@@ -395,13 +395,15 @@ socket.on('connection', socket => {
                 // Tell the guessers who's the new question picker
                 if (currentUser.role === 'guesser') {
                     socket.emit('new-question-picker', questionPicker);
+                    socket.emit('test1');
                 }
 
                 // Explain question picker how to pick a question
                 if (currentUser.role === 'question-picker') {
                     socket.emit('question-help', questionPicker);
+                    socket.emit('test2');
                 }
-            }, 3000);
+            }, 4000);
 
             // Update question picker icon after next round message
             setTimeout(() => {

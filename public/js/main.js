@@ -415,3 +415,12 @@ function appendScoreboard(data, type){
 
     messageContainer.appendChild(outerMessage);
 };
+
+// TESTS
+socket.on('test1', () => {
+    console.log('test worked, guesser');
+});
+
+socket.on('test2', () => {
+    console.log('test worked, question picker');
+});
