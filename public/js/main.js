@@ -167,9 +167,6 @@ socket.on('already-guessed', () => {
 socket.on('game-over', users => {
     clearContainer();
 
-    // Show scoreboard
-    appendMessage('Game over, scores:', 'server-message');
-
     const scores = [];
     
     users.forEach(user => {
@@ -181,23 +178,17 @@ socket.on('game-over', users => {
     const sortedScores = scores.sort((a, b) => (a.points < b.points) ? 1 : -1);
     console.log(sortedScores);
 
-    // Show sorted scores
-    sortedScores.forEach(item => {
-        console.log(item);
-        appendMessage(`${item.name} : ${item.points}`, 'server-message');
-    });
+    appendScoreboard(sortedScores, 'scoreboard');
 
-    appendTimer('server-message');
-
-    // Add timer
-    const duration = 9;
+    // Add timer 14
+    const duration = 14;
     const display = document.querySelector('#timer-game-over');
     startTimer(duration, display);
 
     // Redirect user to the homepage
     setTimeout(() => {
         window.location.pathname = '/';
-    }, 10000);
+    }, 15000);
 });
 
 // Errors
@@ -253,51 +244,31 @@ function appendMessage(msg, type, multipleChoice, answers){
 
     outerMessage.appendChild(newMessage);
 
-    if (type === 'next-round' || 'question') {
-        const loader = document.createElement('div');
-        outerMessage.appendChild(loader);
-    }
-
     // If it's a multiplechoice question, append buttons
     if (multipleChoice) {
         const text = document.createElement('p');
         text.textContent = 'Multiple choice! you can only guess 1 of these answers.';
         outerMessage.appendChild(text);
 
+        const buttonContainer = document.createElement('div');
+        buttonContainer.id = 'button__container';
+
         // Create answers
         answers.forEach(answer => {
             const button = document.createElement('button');
             button.className = 'answer';
             button.textContent = answer;
-            outerMessage.appendChild(button);
+            buttonContainer.appendChild(button);
         });
+
+        outerMessage.appendChild(buttonContainer);
     }
 
-    messageContainer.appendChild(outerMessage);
-    scrollToBottom();
-};
+    if (type === 'next-round' || 'question') {
+        const loader = document.createElement('div');
+        outerMessage.appendChild(loader);
+    }
 
-// Append timer redirect to home
-function appendTimer(type){
-    // Outer message div
-    const outerMessage = document.createElement('div');
-    outerMessage.classList.add('outer-message');
-    outerMessage.classList.add(type);
-
-    // Message text
-    const sentence = document.createElement('p');
-    sentence.textContent = 'You will be send to the homepage in';
-
-    const timer = document.createElement('p');
-    timer.id = 'timer-game-over';
-    timer.textContent = '10';
-
-    const seconds = document.createElement('p');
-    seconds.textContent = 'seconds';
-
-    outerMessage.appendChild(sentence);
-    outerMessage.appendChild(timer);
-    outerMessage.appendChild(seconds);
     messageContainer.appendChild(outerMessage);
     scrollToBottom();
 };
@@ -312,7 +283,7 @@ function clearContainer() {
     messageContainer.textContent = '';
 }
 
-// Update online user amount
+// Update online users and scores
 function updateOnlineUsers(users) {
     // Reset
     document.querySelector('#scores').textContent = '';
@@ -397,3 +368,50 @@ function startTimer(duration, display) {
 socket.on('wait-for-next-round', () => {
     appendMessage('Wait for the next round', 'server-message');
 });
+
+// Append scoreboard
+function appendScoreboard(data, type){
+    // Outer message div
+    const outerMessage = document.createElement('div');
+    outerMessage.classList.add('outer-message');
+    outerMessage.classList.add(type);
+
+    // Message text
+    const title = document.createElement('p');
+    title.classList.add('title');
+    title.textContent = 'Game over, scores:';
+
+    outerMessage.appendChild(title);
+
+    let number = 0;
+
+    data.forEach(user => {
+        number++;
+        const score = document.createElement('p');
+        score.textContent = '#' + number + ' ' + user.name + ': ' + user.points;
+        outerMessage.appendChild(score);
+    });
+
+    // TIMER
+    // Message text
+    const sentence = document.createElement('p');
+    sentence.textContent = 'You will be send to the homepage in';
+
+    const timer = document.createElement('p');
+    timer.id = 'timer-game-over';
+    timer.textContent = '15';
+
+    const seconds = document.createElement('p');
+    seconds.textContent = 'seconds';
+
+    const timerContainer = document.createElement('div');
+    timerContainer.id = 'timer__container2';
+
+    timerContainer.appendChild(sentence);
+    timerContainer.appendChild(timer);
+    timerContainer.appendChild(seconds);
+
+    outerMessage.appendChild(timerContainer);
+
+    messageContainer.appendChild(outerMessage);
+};
