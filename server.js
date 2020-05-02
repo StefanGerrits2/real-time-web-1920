@@ -423,8 +423,9 @@ socket.on('connection', socket => {
         // Remove user from users if they disconnect
         gameData[1].users = gameData[1].users.filter(item => item.id !== socket.id);
 
-        // If person disconnects remove user from haveBeenQuestionPicker
+        // If person disconnects remove user from arrays
         gameData[1].haveBeenQuestionPicker = gameData[1].haveBeenQuestionPicker.filter(item => item !== currentUser.id);
+        gameData[1].haveNotBeenQuestionPicker = gameData[1].haveNotBeenQuestionPicker.filter(item => item !== currentUser.id);
 
         // If everyone left the game
         if (gameData[1].users.length === 0) {

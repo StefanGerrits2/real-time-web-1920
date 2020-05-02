@@ -8,14 +8,24 @@
 Description here
 
 ## Features
-*
-*
-*
+* Playing the game with multiple people (no limit)
+* Scoreboard including users and points
+* First user to join will start off as the one who picks the question
+* Question picker will be able to see the answer
+* Every round there's a new person who's the question picker
+* Open, and multiple choice questions
+  * Open: you can guess without limits
+  * Multiple choice: you can only guess 1 time
+* You earn consecutively less points if others guess the answer first
+* Getting the temperature from a specific place
+* A timer each round
+* Game over screen, scores are shown.
+* New users can join mid-game.
 
 #### Things I wanted to add if I had more time
-*
-*
-*
+* Save all scores in a database
+* Show the correct answer when the round is over
+* 
 
 ## Data life cycle
 ![image](https://user-images.githubusercontent.com/45566396/80801862-f426ad80-8bad-11ea-8ae6-314085dbc58a.png)
