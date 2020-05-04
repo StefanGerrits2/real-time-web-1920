@@ -223,11 +223,9 @@ socket.on('connection', socket => {
     // Commands
     socket.on('send-command', command => {
         // Commands
-        const personalCommands = ['commands', 'temp, multitemp'];
-        const globalCommands = ['red', 'blue', 'orange', 'yellow', 'green', 'black', 'white'];
+        const commands = ['commands', 'temp, multitemp'];
         const tempCommand = 'temp';
         const multipleChoiceTempCommand = 'multitemp';
-        const allCommands = personalCommands.concat(globalCommands);
 
         let location = '';
 
@@ -237,15 +235,8 @@ socket.on('connection', socket => {
         }
 
         // If personal command exists
-        else if (personalCommands.indexOf(command) > -1) {
-            socket.emit('personal-command-executed', command, allCommands);
-            return;
-        }
-
-        // If global command exists
-        if (globalCommands.indexOf(command) > -1) {
-            socket.emit('global-command-executed', command, currentUser.name);
-            socket.broadcast.emit('global-command-executed', command, currentUser.name);
+        else if (commands.indexOf(command) > -1) {
+            socket.emit('command-executed', command, commands);
             return;
         }
 

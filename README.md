@@ -58,7 +58,7 @@ When a user joins the room, the user data will be saved on the server. When the 
 ### Commands
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">send-command</summary>
-      This event fires when someone tried to type a command. It will check if it's a personal or global command. When the user is the question-picker, then the user can type the command to fetch the correst answer from the API and start the round. When the round is started the gamedata will be updated accordingly. If the user tries to execute a command that doesn't exist, give feedback to the user.
+      This event fires when someone tried to type a command. When the user is the question-picker, then the user can type the command to fetch the correst answer from the API and start the round. When the round is started the gamedata will be updated accordingly. If the user tries to execute a command that doesn't exist, give feedback to the user.
 </details>
 
 ### Game elements
@@ -75,75 +75,71 @@ When a user joins the room, the user data will be saved on the server. When the 
 ### Connections
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">user-connected</summary>
-      Text here
+      This will tell all users that a new user joined the game.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">user-disconnected</summary>
-      Text here
+     This will tell all users that a user left the game.
 </details>
 
 ### Chat messages
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">your-chat-message</summary>
-      Text here
+      This will show your guesses in chat.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">their-chat-message</summary>
-      Text here
+      This will show the guesses from the other users in chat.
 </details>
 
 ### Commands
 <details>
-    <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">global-command-executed</summary>
-      Text here
-</details>
-<details>
-    <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">personal-command-executed</summary>
-      Text here
+    <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">command-executed</summary>
+      In this listener I append messages bases on what command it is.
 </details>
 
 ### Game elements
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">scoreboard</summary>
-      Text here
+      In this listener I fire a function which updates the scoreboard. It first deletes all elements, then if appends containers with the user names and the scores. 
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">start-round</summary>
-      Text here
+      In this listener I first clear the entire container. Then it checks if the question is multiple choice or not. If it's multiple choice, it creates buttons with fake answers and the correct answer of course. Finally it starts the timer for that round.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">next-round</summary>
-      Text here
+      In this listener I also clear the container, and append a container which says "Next round" with a timeout. It also removes the old timer from the previous round.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">question-see-answer</summary>
-      Text here
+      This listener shows the correct answer to the question-picker only.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">new-question-picker</summary>
-      Text here
+      This listener tells everyone who's a guesser the new question-picker for the new round. This also changes the input and button value to make it say "Type your guess..." and "Guess!".
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">question-help</summary>
-      Text here
+      This explains the question-picker how to pick a question. This also changes the input and button value to make it say "Type your question" and "Send".
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">user-guessed</summary>
-      Text here
+      This tells everyone when a user guessed the answer.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">game-over</summary>
-      Text here
+      This listener clears the container, and appends a scoreboard with all the scores from each user. Also a timer will be started (15 seconds) to make sure everyone leaves the game and the game can be reset.
 </details>
 
 ### Errors
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">error-handling</summary>
-      Text here
+      In this listener I give feedback to the user based on what error is happening. For example: "Wait for the next round", "This location does not exist" or "You already guessed this round" if it's a multiple choice question.
 </details>
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">command-not-existing</summary>
-      Text here
+      This listener will tell the user the command he/she's trying to execute does not exist. It also shows all available commands.
 </details>
 
 ## API

@@ -38,16 +38,8 @@ socket.on('user-disconnected', user => {
     appendMessage(`${user} disconnected`, 'disconnected');
 });
 
-// Global command executed that exist
-socket.on('global-command-executed', (command, user) => {
-    messageContainer.setAttribute('style', `background-color: ${command}`);
-           
-    appendMessage(`${user} changed the background to ${command}!`, 'global-command-message');
-    messageContainer.setAttribute('style', `background-color: ${command}`);    
-});
-
 // Personal command executed that exist
-socket.on('personal-command-executed', (command, commands, location, celcius) => {
+socket.on('command-executed', (command, commands, location, celcius) => {
     appendMessage(`/${command}`, 'personal-command-message');
 
     if (command === 'commands') {
@@ -56,7 +48,6 @@ socket.on('personal-command-executed', (command, commands, location, celcius) =>
     }
  
     if (command.includes('temp')) {
-        console.log(command);
         appendMessage(`The current temperature in ${location} is ${celcius} degrees`, 'server-message');
     }
 });
@@ -140,7 +131,7 @@ socket.on('new-question-picker', user => {
 socket.on('question-help', () => {
     appendMessage('You are the question picker, type /temp <location> to start the round, you can also type /multitemp <location> to start a Multiple Choice question! Example: /temp amsterdam or /multitemp amsterdam', 'server-message');
 
-    document.querySelector('#input').placeholder = 'Type your message...';
+    document.querySelector('#input').placeholder = 'Type your question...';
     document.querySelector('#send').value = 'Send';
 });
 
