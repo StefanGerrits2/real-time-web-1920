@@ -316,7 +316,7 @@ socket.on('connection', socket => {
 
         // If command does not exist
         else {
-            socket.emit('command-not-existing', allCommands);
+            socket.emit('command-not-existing', commands);
         }
     });
 

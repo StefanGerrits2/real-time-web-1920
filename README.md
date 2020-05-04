@@ -29,11 +29,12 @@ This is a real time web app where users can play a game where they have to guess
 * A custom "prompt" to ask for a username
 
 ## Data life cycle
-![image](https://user-images.githubusercontent.com/45566396/80801862-f426ad80-8bad-11ea-8ae6-314085dbc58a.png)
+![image](https://user-images.githubusercontent.com/45566396/80964848-d9547300-8e11-11ea-9b88-234bbf601e67.png)
 
 When a user joins the room, the user data will be saved on the server. When the question picker starts the round, the game data will be created and updated on the server. After this data will be fetched from the Openweather API to get the correct answer for that round. When the guessers are guessing, their answers will be checked with the correct answer, if it's wrong, do nothing, if it's right, update the points for that user. When the round is over the game data will be updates towards the client and the next round will be started.
 
 ## Socket server events
+###### Click an event for more information
 ### General
 <details>
     <summary style="background-color: #f0f0f0; cursor: pointer; width: fit-content; padding: .5em; margin: 10px">connection</summary>
