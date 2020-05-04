@@ -67,19 +67,9 @@ socket.on('command-not-existing', commands => {
     appendMessage(`command does not exist, try these instead: ${commands}`, 'error-message');
 });
 
-// Wrong location
-socket.on('wrong-location', () => {
-    appendMessage('This location does not exist!', 'error-message');
-});
-
 // Online users
 socket.on('scoreboard', (users, currentRound) => {
     updateOnlineUsers(users, currentRound);
-});
-
-// onclick start game
-socket.on('start-game', () => {
-    // start game
 });
 
 // Start round
@@ -159,11 +149,6 @@ socket.on('user-guessed', user => {
     appendMessage(`${user} guessed the answer!`, 'server-message');
 });
 
-// User already guessed multiple choice
-socket.on('already-guessed', () => {
-    appendMessage('You already guessed this round!', 'server-message');
-});
-
 // Game over
 socket.on('game-over', users => {
     clearContainer();
@@ -193,12 +178,22 @@ socket.on('game-over', users => {
 });
 
 // Errors
-socket.on('round-not-started', () => {
-    appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
-});
-
-socket.on('round-in-progress', () => {
-    appendMessage('Wait for the round to finish!', 'server-message');
+socket.on('error-handling', type => {
+    if (type == 'round-not-started') {
+        appendMessage('No round has been started, wait for the question-picker to start it.', 'server-message');
+    }
+    if (type == 'round-in-progress') {
+        appendMessage('Wait for the round to finish!', 'server-message');
+    }
+    if (type == 'wait-for-next-round') {
+        appendMessage('Wait for the next round', 'server-message');
+    }
+    if (type == 'already-guessed') {
+        appendMessage('You already guessed this round!', 'server-message');
+    }
+    if (type == 'wrong-location') {
+        appendMessage('This location does not exist!', 'error-message');
+    }
 });
 //
 
@@ -371,14 +366,6 @@ function startTimer(duration, display) {
     scrollToBottom();
 }
 
-// socket.on('user-spectating', () => {
-//     appendMessage('someone is now spectating!', 'server-message');
-// });
-
-socket.on('wait-for-next-round', () => {
-    appendMessage('Wait for the next round', 'server-message');
-});
-
 // Append scoreboard
 function appendScoreboard(data, type){
     // Outer message div
@@ -405,7 +392,7 @@ function appendScoreboard(data, type){
     // TIMER
     // Message text
     const sentence = document.createElement('p');
-    sentence.textContent = 'You will be send to the homepage in';
+    sentence.textContent = 'You will be sent to the homepage in';
 
     const timer = document.createElement('p');
     timer.id = 'timer-game-over';

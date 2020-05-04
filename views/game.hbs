@@ -1,0 +1,21 @@
+<div id="score__container">
+    <div id="score-header">
+        <h1>Scoreboard</h1>
+        <p id="roundInfo"></p>
+    </div>
+    <div id="scores"></div>
+</div>
+
+<div id="game__container">
+    {{> header}}
+
+    <div id="messages__container"></div>
+
+    <form id="form" method="post">
+        <input autocomplete="off" id="input" placeholder="Type your guess..." type="text">
+        <input type="submit" id="send" value="Guess!">
+    </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

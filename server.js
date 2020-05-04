@@ -18,9 +18,9 @@ const dataHelper = require('./modules/dataHelper.js');
 const Fetcher = require('./modules/fetch.js');
 const shuffle = require('./modules/shuffleAnswers.js');
 
-// Controllers
+// Routes
+const game = require('./routes/game.js');
 const home = require('./routes/home.js');
-const chooseRoom = require('./routes/chooseRoom.js');
 const notFound = require('./routes/notFound.js');
 
 app
@@ -48,8 +48,8 @@ app
     }))
 
     // Get routes
-    .get('/', chooseRoom)
-    .get('/game', home)
+    .get('/', home)
+    .get('/game', game)
 
     // 404 not found
     .use(notFound);
@@ -137,7 +137,7 @@ socket.on('connection', socket => {
 
         // Update data if user joins mid game
         if (gameData[1].round !== 0) {
-            socket.emit('wait-for-next-round');
+            socket.emit('error-handling', 'wait-for-next-round');
 
             if (
                 currentUser.role === 'guesser' 
@@ -171,11 +171,11 @@ socket.on('connection', socket => {
 
         // If no round has been started yet
         if (!gameData[1].activeRound) {
-            socket.emit('round-not-started');
+            socket.emit('error-handling', 'round-not-started');
         }
 
         else if (currentUser.multipleChoiceGuessed >= 2 && currentUser.role === 'guesser') {
-            socket.emit('already-guessed');
+            socket.emit('error-handling', 'already-guessed');
         }
 
         // Guess the answer
@@ -205,7 +205,7 @@ socket.on('connection', socket => {
 
         // If you already guessed the answer in the current round
         else if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1 || currentUser.role == 'question-picker') {
-            socket.emit('round-in-progress');
+            socket.emit('error-handling', 'round-in-progress');
         }
 
         // Normal chat message
@@ -223,7 +223,7 @@ socket.on('connection', socket => {
     // Commands
     socket.on('send-command', command => {
         // Commands
-        const personalCommands = ['commands', 'temp'];
+        const personalCommands = ['commands', 'temp, multitemp'];
         const globalCommands = ['red', 'blue', 'orange', 'yellow', 'green', 'black', 'white'];
         const tempCommand = 'temp';
         const multipleChoiceTempCommand = 'multitemp';
@@ -317,7 +317,7 @@ socket.on('connection', socket => {
                 }
 
                 catch(err) {
-                    socket.emit('wrong-location');
+                    socket.emit('error-handling', 'wrong-location');
                 }
             }
             getTemperature(location);
@@ -327,11 +327,6 @@ socket.on('connection', socket => {
         else {
             socket.emit('command-not-existing', allCommands);
         }
-    });
-
-    // Start game
-    socket.on('start-game', () => {
-        //
     });
 
     // Next round
