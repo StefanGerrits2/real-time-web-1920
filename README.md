@@ -33,7 +33,12 @@ This is a real time web app where users can play a game where they have to guess
 
 When a user joins the room, the user data will be saved on the server. When the question picker starts the round, the game data will be created and updated on the server. After this data will be fetched from the Openweather API to get the correct answer for that round. When the guessers are guessing, their answers will be checked with the correct answer, if it's wrong, do nothing, if it's right, update the points for that user. When the round is over the game data will be updates towards the client and the next round will be started.
 
-#### Database
+#### Data on the server (non persisted data) 
+This is my single source of truth.
+
+I keep track of all data on the server, this is game data and user data. You can exactly see what data is stored on the server in my Data Life Cycle. The answers users give will also be checked on the server. This will be sent to the client when needed.
+
+#### Database (persisted data)
 
 > I didn't have time to connect a database to my application. But if I had a database connected, I would put all game scores from all games to keep that data persisted. This data isn't likely to get modified. Another reason to save data on the database is that if I would save the data on the server, it will get wiped when the server isn't active anymore. I would add a button on the homepage that shows a list of all previous games that happened. You would be able to see the user names and the scores they had.
 
