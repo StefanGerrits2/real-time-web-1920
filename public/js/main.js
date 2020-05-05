@@ -19,7 +19,7 @@ if (user == undefined || '' ) {
 let multipleChoiceQuestion = false;
 
 // You joined message
-appendContainer.appendMessage(`You joined (${user})`, 'joined the game');
+appendContainer.appendMessage(`You joined (${user})`, 'joined');
 socket.emit('new-user', user);
 
 // Their chat message
@@ -34,7 +34,7 @@ socket.on('your-chat-message', msg => {
 
 // User connected
 socket.on('user-connected', user => {
-    appendContainer.appendMessage(`${user} joined`, 'connected');
+    appendContainer.appendMessage(`${user} joined the game`, 'connected');
 });
 
 // User disconnected
