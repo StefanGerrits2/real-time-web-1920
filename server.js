@@ -166,7 +166,6 @@ socket.on('connection', socket => {
 
     // Chat message
     socket.on('send-chat-message', msg => {
-        console.log(currentUser);
         // Send messages
 
         // If no round has been started yet
@@ -203,7 +202,7 @@ socket.on('connection', socket => {
             socket.emit('scoreboard', gameData[1].users, gameData[1].round);
         }
 
-        // If you already guessed the answer in the current round
+        // If you already guessed the answer in the current round, or you're the question picker
         else if (gameData[1].guessedTheAnswer.indexOf(currentUser.id) > -1 || currentUser.role == 'question-picker') {
             socket.emit('error-handling', 'round-in-progress');
         }
